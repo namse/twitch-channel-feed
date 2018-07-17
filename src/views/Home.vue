@@ -1,18 +1,30 @@
 <template>
   <div class="home">
     <img src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <div v-for="feed in feeds" :key="feed.id">
+      <FeedComponent :feed="feed"/>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { Component, Vue } from "vue-property-decorator";
+import FeedComponent from "@/components/Feed.vue";
+import { mapActions } from "vuex";
+import { State, Action, Getter } from "vuex-class";
+import { Feed } from "@/store";
 
 @Component({
   components: {
-    HelloWorld,
-  },
+    FeedComponent
+  }
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  @Action("loadingFeeds") loadingFeeds: any;
+  @State("feeds") feeds!: Feed[];
+
+  created() {
+    this.loadingFeeds();
+  }
+}
 </script>
