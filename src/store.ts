@@ -12,6 +12,16 @@ export type Feed = {
   content: string;
 }
 
+function generateRandomContent(length) {
+  let text = "";
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789가나다라마바사아아아라나나다라마나아라 ";
+
+  for (let i = 0; i < length; i++)
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  return text;
+}
+
 export default new Vuex.Store({
   state: {
     feeds: <Feed[]>[],
@@ -32,9 +42,9 @@ export default new Vuex.Store({
         return {
           id: uuid(),
           username: `username${index}${(Math.random() * 1000).toFixed().padStart(4, '0')}`,
-          profilePictureUrl: '/img/logo.82b9c7a5.png',
+          profilePictureUrl: '/img/logo.png',
           date: new Date(),
-          content: 'SEX',
+          content: generateRandomContent(1000),
         };
       });
 

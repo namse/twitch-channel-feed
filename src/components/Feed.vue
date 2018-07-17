@@ -1,6 +1,13 @@
 <template>
-  <div class="hello">
-    {{ feed }}
+  <div class="container">
+    <header>
+      <img class="profile-image" v-bind:src="feed.profilePictureUrl"/>
+      <div class="username-date-container">
+        <h5 class="username">{{feed.username}}</h5>
+        <span class="date">{{feed.date}}</span>
+      </div>
+    </header>
+    <div class="content">{{feed.content}}</div>
   </div>
 </template>
 
@@ -16,18 +23,31 @@ export default class FeedComponent extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-// h3 {
-//   margin: 40px 0 0;
-// }
-// ul {
-//   list-style-type: none;
-//   padding: 0;
-// }
-// li {
-//   display: inline-block;
-//   margin: 0 10px;
-// }
-// a {
-//   color: #42b983;
-// }
+.container {
+  width: 100%;
+  height: 100%;
+}
+.profile-image {
+  height: 40px;
+  width: 40px;
+  margin-right: 8px;
+  float: left;
+}
+.username-date-container {
+  width: 100%;
+  height: 40px;
+}
+.username {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.38;
+  margin-top: 0px;
+  margin-bottom: 2px;
+}
+.date {
+  font-size: 12px;
+}
+.content {
+  overflow-wrap: break-word;
+}
 </style>

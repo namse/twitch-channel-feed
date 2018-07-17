@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <img src="../assets/logo.png">
     <div v-for="feed in feeds" :key="feed.id">
       <FeedComponent :feed="feed"/>
     </div>
