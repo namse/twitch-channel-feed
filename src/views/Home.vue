@@ -9,7 +9,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import FeedComponent from "@/components/Feed.vue";
-import { mapActions } from "vuex";
 import { State, Action, Getter } from "vuex-class";
 import { Feed } from "@/store";
 
