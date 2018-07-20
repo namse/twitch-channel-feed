@@ -1,13 +1,11 @@
 <template>
   <div class="container">
-    <header>
-      <img class="profile-image" v-bind:src="feed.profilePictureUrl"/>
-      <div class="username-date-container">
-        <h5 class="username">{{feed.username}}</h5>
-        <span class="date">{{feed.date}}</span>
-      </div>
-    </header>
-    <div class="content">{{feed.content}}</div>
+    <div>
+      asdf
+      <a v-on:click="clickEmote">
+        <img  src="/logo.png"/>
+      </a>
+    </div>
   </div>
 </template>
 
@@ -15,8 +13,10 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class FeedComponent extends Vue {
-  @Prop() private feed!: Feed;
+export default class EmotesComponent extends Vue {
+  clickEmote() {
+    console.log("fuck");
+  }
 }
 </script>
 

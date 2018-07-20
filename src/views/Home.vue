@@ -9,8 +9,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import FeedComponent from "@/components/Feed.vue";
-import { State, Action, Getter } from "vuex-class";
-import { Feed } from "@/store";
+import { State, Action } from "vuex-class";
 
 @Component({
   components: {
