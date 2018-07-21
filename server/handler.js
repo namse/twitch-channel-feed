@@ -1,34 +1,46 @@
-const jwksClient = require('jwks-rsa');
-const jwt = require('jsonwebtoken');
+const AWS = require('aws-sdk');
+const authenticate = require('authenticate');
 
-const client = jwksClient({
-  jwksUri: 'https://id.twitch.tv/oauth2/keys',
-});
+var s3 = new AWS.S3();
+const bucketName = 'twitch-channel-feed';
 
-function getKey(header, callback) {
-  client.getSigningKey(header.kid, (err, key) => {
-    const signingKey = key.publicKey || key.rsaPublicKey;
-    callback(null, signingKey);
-  });
-}
-
-async function decodeToken(token) {
-  return new Promise((resolve, reject) => {
-    const options = {};
-    jwt.verify(token, getKey, options, (err, decoded) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(decoded);
-    });
-  });
-}
 
 module.exports.post = async (event, context, callback) => {
   try {
     const body = JSON.parse(event.body);
-    const { token } = body;
-    const decoded = await decodeToken(token);
+    const { token, content } = body;
+    const decoded = await authenticate(token);
+    const { sub: userId } = decoded;
+    const recentKey = `${userId}/recent.json`;
+
+    let recent
+    try {
+      const data = await s3.getObject({
+        Bucket: bucketName,
+        Key: recentKey,
+      }).promise();
+      recent = JSON.parse(data.Body);
+    } catch (err) {
+      if (err.code !== 'NoSuchKey') {
+        throw err;
+      }
+      recent = {
+        feeds: [],
+        nextData: null,
+      };
+    }
+
+    const {
+      feeds,
+    } = recent;
+    feeds.unshift(content);
+
+    await s3.putObject({
+      Bucket: bucketName,
+      Key: recentKey,
+      Body: JSON.stringify(recent),
+    }).promise();
+
     const response = {
       statusCode: 200,
       headers: {
@@ -36,9 +48,8 @@ module.exports.post = async (event, context, callback) => {
         "Access-Control-Allow-Credentials": true,
       },
       body: JSON.stringify({
-        message: 'Go Serverless v1.0! Your function executed successfully!',
-        token,
-        decoded,
+        message: 'Successfully posted',
+        recent,
       }),
     };
 

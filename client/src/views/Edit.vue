@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="editor" contenteditable="true">
+    <div class="editor" contenteditable="true" @input="onUpdateContent">
     </div>
     <button v-on:click="save">저장하기</button>
     <button v-on:click="login">로그인하기</button>
@@ -27,15 +27,32 @@ import EmotesComponent from "@/components/Emotes.vue";
 export default class Edit extends Vue {
   @State("clientId") clientId!: string;
   @State("accessToken") accessToken!: string;
+  @State("idToken") idToken!: string;
 
   @Action("fetchAccessTokenAndIdToken") fetchAccessTokenAndIdToken: any;
+
+  content: string = "";
 
   user: any = null;
   mounted() {
     this.fetchAccessTokenAndIdToken();
   }
-  save() {
-    console.log("i couldnt save my wift");
+  onUpdateContent(event) {
+    this.content = event.target.innerText;
+  }
+  async save() {
+    const response = await fetch(
+      "https://yaauic5zfh.execute-api.ap-northeast-2.amazonaws.com/dev/feed",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          token: this.idToken,
+          content: this.content
+        })
+      }
+    );
+    const json = await response.json();
+    console.log(json);
   }
   login() {
     const redirectUri = "http://192.168.0.2:8080/edit";

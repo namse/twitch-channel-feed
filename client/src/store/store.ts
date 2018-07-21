@@ -93,13 +93,6 @@ export default new Vuex.Store({
 
       context.commit('setAccessToken', accessToken);
       context.commit('setIdToken', idToken);
-      fetch('https://yaauic5zfh.execute-api.ap-northeast-2.amazonaws.com/dev/feed', {
-        method: 'POST',
-        body: JSON.stringify({
-          token: idToken,
-        }),
-      }).then((response) => response.json())
-        .then((json) => console.log(json));
     },
     async fetchUser(context) {
       const response = await fetch('https://api.twitch.tv/kraken/user', {
