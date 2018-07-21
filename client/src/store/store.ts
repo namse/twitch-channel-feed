@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import uuid from 'uuid/v4';
+import { getUserEmotes, getUser, getProfilePicture, getUsername } from '@/api/twitchApi';
+import { getFeedContents } from '@/api/awsApi';
 
 Vue.use(Vuex);
 
@@ -24,7 +26,6 @@ function extractData(keyValueStrings: string[], key: string): string {
 
 interface State {
   feeds: Feed[];
-  clientId: string;
   accessToken?: string;
   idToken?: string;
   user?: TwitchUser;
@@ -33,7 +34,6 @@ interface State {
 
 const state: State = {
   feeds: [],
-  clientId: 'nmbqgdv3qbinn9z3088sw816t834jx',
   accessToken: undefined,
   idToken: undefined,
   user: undefined,
@@ -66,17 +66,23 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loadingFeeds(context) {
-      const feeds: Feed[] = [0, 1, 2, 3, 4].map((index) => {
+    async loadingFeeds(context, userId) {
+      const {
+      } = context.state;
+      const feedContents = await getFeedContents(userId);
+      const profilePictureUrl = await getProfilePicture(userId);
+      const username = await getUsername(userId);
+
+      // TODO : check empty feed
+      const feeds: Feed[] = feedContents.map((content) => {
         return {
           id: uuid(),
-          username: `username${index}${(Math.random() * 1000).toFixed().padStart(4, '0')}`,
-          profilePictureUrl: '/img/logo.png',
-          date: new Date(),
-          content: generateRandomContent(1000),
+          username: username,
+          profilePictureUrl,
+          date: new Date(), // TODO
+          content,
         };
       });
-
       context.commit('clearFeed');
 
       feeds.forEach((feed) => {
@@ -95,30 +101,22 @@ export default new Vuex.Store({
       context.commit('setIdToken', idToken);
     },
     async fetchUser(context) {
-      const response = await fetch('https://api.twitch.tv/kraken/user', {
-        headers: {
-          'Authorization': `OAuth ${this.accessToken}`,
-          'Accept': 'application/vnd.twitchtv.v5+json',
-          'Client-ID': context.state.clientId,
-        },
-      });
-      const json = await response.json();
-      context.commit('setUser', json);
+      const {
+        accessToken,
+      } = context.state;
+      const user = await getUser(accessToken);
+      context.commit('setUser', user);
     },
     async fetchUserEmotes(context) {
-      let user = context.state.user;
+      const {
+        accessToken,
+        user,
+      } = context.state;
       if (!user) {
         throw new Error('No Twitch User logined');
       }
-      const response = await fetch(`https://api.twitch.tv/kraken/users/${user._id}/emotes`, {
-        headers: {
-          'Authorization': `OAuth ${this.accessToken}`,
-          'Accept': 'application/vnd.twitchtv.v5+json',
-          'Client-ID': context.state.clientId,
-        }
-      });
-      const json = await response.json();
-      context.commit('setEmoticonSets', json.emoticon_sets);
+      const emoticonSets = await getUserEmotes(accessToken, user._id);
+      context.commit('setEmoticonSets', emoticonSets);
     },
   },
 });
