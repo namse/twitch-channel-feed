@@ -9,14 +9,14 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/:userId',
-      name: 'view',
-      component: View,
-    },
-    {
       path: '/edit',
       name: 'edit',
       component: Edit,
+    },
+    {
+      path: '/feed/:userId',
+      name: 'view',
+      component: View,
     }
   ],
 });
