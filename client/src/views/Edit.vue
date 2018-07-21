@@ -18,6 +18,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import EmotesComponent from "@/components/Emotes.vue";
+import { TWITCH_CLIENT_ID } from "../api/twitchApi";
 
 @Component({
   components: {
@@ -25,7 +26,6 @@ import EmotesComponent from "@/components/Emotes.vue";
   }
 })
 export default class Edit extends Vue {
-  @State("clientId") clientId!: string;
   @State("accessToken") accessToken!: string;
   @State("idToken") idToken!: string;
 
@@ -58,11 +58,9 @@ export default class Edit extends Vue {
     const redirectUri = "http://192.168.0.2:8080/edit";
     const responseType = "token+id_token";
     const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
-    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${
-      this.clientId
-    }&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
+    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
 
-    window.location.replace(url);
+    window.location.href = url;
   }
 }
 </script>

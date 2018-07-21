@@ -1,11 +1,11 @@
-const clientId = 'nmbqgdv3qbinn9z3088sw816t834jx';
+export const TWITCH_CLIENT_ID = 'nmbqgdv3qbinn9z3088sw816t834jx';
 
 export async function getUserEmotes(accessToken, userId) {
   const response = await fetch(`https://api.twitch.tv/kraken/users/${userId}/emotes`, {
     headers: {
       'Authorization': `OAuth ${accessToken}`,
       'Accept': 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId,
+      'Client-ID': TWITCH_CLIENT_ID,
     }
   });
   const json = await response.json();
@@ -17,7 +17,7 @@ export async function getUser(accessToken) {
     headers: {
       'Authorization': `OAuth ${accessToken}`,
       'Accept': 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId,
+      'Client-ID': TWITCH_CLIENT_ID,
     },
   });
   const json = await response.json();
@@ -29,7 +29,7 @@ export async function getChannel(userId) {
   const response = await fetch(`https://api.twitch.tv/kraken/channels/${userId}`, {
     headers: {
       'Accept': 'application/vnd.twitchtv.v5+json',
-      'Client-ID': clientId,
+      'Client-ID': TWITCH_CLIENT_ID,
     },
   });
   const json = await response.json();
