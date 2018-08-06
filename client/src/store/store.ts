@@ -77,7 +77,7 @@ export default new Vuex.Store({
       const feeds: Feed[] = feedContents.map((content) => {
         return {
           id: uuid(),
-          username: username,
+          username,
           profilePictureUrl,
           date: new Date(), // TODO
           content,
@@ -118,5 +118,8 @@ export default new Vuex.Store({
       const emoticonSets = await getUserEmotes(accessToken, user._id);
       context.commit('setEmoticonSets', emoticonSets);
     },
+    setAccessToken(context, accessToken) {
+      context.commit('setAccessToken', accessToken);
+    }
   },
 });

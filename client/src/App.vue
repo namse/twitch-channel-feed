@@ -1,9 +1,38 @@
 <template>
   <div id="app">
-    <router-view/>
+    <!-- <ViewPage /> -->
+    <EditPage />
   </div>
 </template>
 
+<script lang="ts">
+import EmotesComponent from "@/components/Emotes.vue";
+import { Component, Vue } from "vue-property-decorator";
+import ViewPage from "@/pages/View.vue";
+import EditPage from "@/pages/Edit.vue";
+
+declare var Twitch: any;
+
+@Component({
+  components: {
+    ViewPage,
+    EmotesComponent,
+    EditPage
+  }
+})
+export default class App extends Vue {
+  // created() {
+  //   Twitch.ext.onAuthorized(auth => {
+  //     console.log(auth);
+  //     const tokenParts = auth.token.split('.');
+  //     const json = JSON.parse(atob(tokenParts[1]));
+  //     this.userId = json.user_id;
+  //     this.channelId = auth.channelId;
+  //     this.loadingFeeds(auth.channelId);
+  //   });
+  // }
+}
+</script>
 <style lang="scss">
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;

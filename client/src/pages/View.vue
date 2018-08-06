@@ -1,5 +1,7 @@
 <template>
   <div class="view">
+    {{userId}}
+    {{channelId}}
     <div v-for="feed in feeds" :key="feed.id">
       <FeedComponent :feed="feed"/>
     </div>
@@ -10,21 +12,30 @@
 import { Component, Vue } from "vue-property-decorator";
 import FeedComponent from "@/components/Feed.vue";
 import { State, Action } from "vuex-class";
-import { Route } from "vue-router";
+
+declare var Twitch: any;
 
 @Component({
   components: {
     FeedComponent
   }
 })
-export default class View extends Vue {
+export default class ViewPage extends Vue {
   @Action("loadingFeeds") loadingFeeds: any;
   @State("feeds") feeds!: Feed[];
 
-  $route!: Route;
+  // $route!: Route;
+  twitch: any = Twitch;
+  userId: string = "";
+  channelId: string = "";
 
   created() {
-    this.loadingFeeds(this.$route.params.userId);
+    Twitch.ext.onAuthorized(auth => {
+      console.log(auth);
+      this.userId = auth.userId;
+      this.channelId = auth.channelId;
+      this.loadingFeeds(auth.channelId);
+    });
   }
 }
 </script>

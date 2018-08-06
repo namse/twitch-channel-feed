@@ -4,8 +4,8 @@
     </div>
     <button v-on:click="save">저장하기</button>
     <button v-on:click="login">로그인하기</button>
-    <!-- <button v-on:click="getUser">getUser</button>
-    <button v-on:click="getUserEmotes">getUserEmotes</button> -->
+    <button v-on:click="fetchUser">fetchUser</button>
+    <button v-on:click="fetchUserEmotes">fetchUserEmotes</button>
     <EmotesComponent />
   </div>
 </template>
@@ -20,6 +20,8 @@ import { State, Action } from "vuex-class";
 import EmotesComponent from "@/components/Emotes.vue";
 import { TWITCH_CLIENT_ID } from "../api/twitchApi";
 
+declare var Twitch: any;
+
 @Component({
   components: {
     EmotesComponent
@@ -30,12 +32,20 @@ export default class Edit extends Vue {
   @State("idToken") idToken!: string;
 
   @Action("fetchAccessTokenAndIdToken") fetchAccessTokenAndIdToken: any;
+  @Action("setAccessToken") setAccessToken: any;
+  @Action("fetchUser") fetchUser: any;
+  @Action("fetchUserEmotes") fetchUserEmotes: any;
 
   content: string = "";
 
   user: any = null;
   mounted() {
-    this.fetchAccessTokenAndIdToken();
+    Twitch.ext.onAuthorized(auth => {
+      console.log(auth);
+      this.setAccessToken(auth.token);
+    });
+
+    // this.fetchAccessTokenAndIdToken();
   }
   onUpdateContent(event) {
     this.content = event.target.innerText;
