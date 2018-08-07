@@ -1,9 +1,5 @@
 <template>
   <div id="app">
-    <button
-      v-if="isOwner"
-      v-on:click="changePage('EditPage')"
-    >Post New Channel Feed</button>
     <component :is="currentPage" />
   </div>
 </template>
@@ -25,10 +21,8 @@ declare var Twitch: any;
 })
 export default class App extends Vue {
   @Action("saveExtensionAuth") saveExtensionAuth: any;
-  @Action("changePage") changePage: any;
 
   @State("currentPage") currentPage!: string;
-  @State("isOwner") isOwner!: boolean;
 
   created() {
     Twitch.ext.onAuthorized(auth => {

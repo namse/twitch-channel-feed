@@ -1,5 +1,9 @@
 <template>
   <div class="view">
+    <button
+      v-if="isOwner"
+      v-on:click="changePage('EditPage')"
+    >Post New Channel Feed</button>
     {{userId}}
     {{channelId}}
     <div v-for="feed in feeds" :key="feed.id">
@@ -21,7 +25,10 @@ declare var Twitch: any;
   }
 })
 export default class ViewPage extends Vue {
+  @Action("changePage") changePage: any;
+
   @State("feeds") feeds!: Feed[];
+  @State("isOwner") isOwner!: boolean;
 
   // $route!: Route;
   twitch: any = Twitch;

@@ -1,12 +1,14 @@
 <template>
   <div class="container">
+    {{ extensionAuth.token }}
+    <button v-on:click="back">뒤로 가기</button>
     <div class="editor" contenteditable="true" @input="onUpdateContent">
     </div>
     <button v-on:click="save">저장하기</button>
-    <button v-on:click="login">로그인하기</button>
+    <!-- <button v-on:click="login">로그인하기</button>
     <button v-on:click="fetchUser">fetchUser</button>
-    <button v-on:click="fetchUserEmotes">fetchUserEmotes</button>
-    <EmotesComponent />
+    <button v-on:click="fetchUserEmotes">fetchUserEmotes</button> -->
+    <!-- <EmotesComponent /> -->
   </div>
 </template>
 
@@ -28,27 +30,16 @@ declare var Twitch: any;
   }
 })
 export default class Edit extends Vue {
-  @State("accessToken") accessToken!: string;
-  @State("idToken") idToken!: string;
-
-  @Action("fetchAccessTokenAndIdToken") fetchAccessTokenAndIdToken: any;
-  @Action("setAccessToken") setAccessToken: any;
-  @Action("fetchUser") fetchUser: any;
-  @Action("fetchUserEmotes") fetchUserEmotes: any;
+  @State("extensionAuth") extensionAuth!: ExtensionAuth;
+  @Action("changePage") changePage: any;
 
   content: string = "";
 
-  user: any = null;
-  mounted() {
-    Twitch.ext.onAuthorized(auth => {
-      console.log(auth);
-      this.setAccessToken(auth.token);
-    });
-
-    // this.fetchAccessTokenAndIdToken();
-  }
   onUpdateContent(event) {
     this.content = event.target.innerText;
+  }
+  back() {
+    this.changePage("ViewPage");
   }
   async save() {
     const response = await fetch(
@@ -56,21 +47,15 @@ export default class Edit extends Vue {
       {
         method: "POST",
         body: JSON.stringify({
-          token: this.idToken,
+          token: this.extensionAuth.token,
           content: this.content
         })
       }
     );
     const json = await response.json();
     console.log(json);
-  }
-  login() {
-    const redirectUri = "http://192.168.0.2:8080/edit";
-    const responseType = "token+id_token";
-    const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
-    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
-
-    window.location.href = url;
+    alert("성공적으로 저장되었습니다.");
+    this.changePage("ViewPage");
   }
 }
 </script>

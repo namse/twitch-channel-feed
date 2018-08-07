@@ -33,17 +33,13 @@ provider:
       Resource:
         - "*"
 # you can define service wide environment variables here
-#  environment:
-#    variable1: value1
+  environment:
+    TWITCH_EXTENSION_SECRET_KEY: "${self:custom.secrets.TWITCH_EXTENSION_SECRET_KEY}"
 
 # you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
+package:
+ exclude:
+   - secrets.yml
 
 functions:
   hello:
@@ -93,3 +89,6 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+custom:
+  secrets: ${file(secrets.yml)}

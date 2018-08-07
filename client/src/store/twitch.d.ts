@@ -23,3 +23,10 @@ declare type EmoticonSets = {
     id: number;
   };
 };
+
+declare type ExtensionAuth = {
+  channelId: string;
+  clientId: string;
+  token: string;
+  userId: string;
+};

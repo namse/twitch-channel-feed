@@ -24,13 +24,6 @@ function extractData(keyValueStrings: string[], key: string): string {
   return data.substring(`${key}=`.length);
 }
 
-declare type ExtensionAuth = {
-  channelId: string;
-  clientId: string;
-  token: string;
-  userId: string;
-};
-
 interface State {
   feeds: Feed[];
   accessToken?: string;
@@ -157,8 +150,10 @@ export default new Vuex.Store({
         context.commit('setIsOwner', false);
         return;
       }
+      const payload = JSON.parse(atob(extensionAuth.token.split('.')[1]));
+      const isOwner = payload.role === 'broadcaster';
 
-      context.commit('setIsOwner', extensionAuth.userId === `U${extensionAuth.channelId}`);
+      context.commit('setIsOwner', isOwner);
     },
     changePage(context, pageName) {
       context.commit('setCurrentPage', pageName);

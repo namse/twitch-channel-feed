@@ -1,16 +1,24 @@
 const AWS = require('aws-sdk');
-const authenticate = require('authenticate');
+const authenticate = require('./authenticate');
 
 var s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
 
-
 module.exports.post = async (event, context, callback) => {
   try {
     const body = JSON.parse(event.body);
-    const { token, content } = body;
+    const {
+      token,
+      content,
+    } = body;
     const decoded = await authenticate(token);
-    const { sub: userId } = decoded;
+    const {
+      role,
+      user_id: userId,
+    } = decoded;
+    if (role !== 'broadcaster') {
+      throw new Error('you are not broadcaster. fuck you');
+    }
     const recentKey = `${userId}/recent.json`;
 
     let recent

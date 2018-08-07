@@ -1,27 +1,9 @@
-const jwksClient = require('jwks-rsa');
 const jwt = require('jsonwebtoken');
 
-const client = jwksClient({
-  jwksUri: 'https://id.twitch.tv/oauth2/keys',
-});
+const SECRET_BUFFER = new Buffer(process.env.TWITCH_EXTENSION_SECRET_KEY, 'base64');
 
-function getKey(header, callback) {
-  client.getSigningKey(header.kid, (err, key) => {
-    const signingKey = key.publicKey || key.rsaPublicKey;
-    callback(null, signingKey);
-  });
-}
-
-async function authenticate(token) {
-  return new Promise((resolve, reject) => {
-    const options = {};
-    jwt.verify(token, getKey, options, (err, decoded) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(decoded);
-    });
-  });
+function authenticate(token) {
+  return jwt.verify(token, SECRET_BUFFER);
 }
 
 module.exports = authenticate;
