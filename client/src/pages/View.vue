@@ -21,21 +21,11 @@ declare var Twitch: any;
   }
 })
 export default class ViewPage extends Vue {
-  @Action("loadingFeeds") loadingFeeds: any;
   @State("feeds") feeds!: Feed[];
 
   // $route!: Route;
   twitch: any = Twitch;
   userId: string = "";
   channelId: string = "";
-
-  created() {
-    Twitch.ext.onAuthorized(auth => {
-      console.log(auth);
-      this.userId = auth.userId;
-      this.channelId = auth.channelId;
-      this.loadingFeeds(auth.channelId);
-    });
-  }
 }
 </script>

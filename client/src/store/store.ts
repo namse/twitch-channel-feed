@@ -24,12 +24,22 @@ function extractData(keyValueStrings: string[], key: string): string {
   return data.substring(`${key}=`.length);
 }
 
+declare type ExtensionAuth = {
+  channelId: string;
+  clientId: string;
+  token: string;
+  userId: string;
+};
+
 interface State {
   feeds: Feed[];
   accessToken?: string;
   idToken?: string;
   user?: TwitchUser;
   emoticonSets?: EmoticonSets;
+  extensionAuth?: ExtensionAuth;
+  currentPage: string;
+  isOwner: boolean;
 };
 
 const state: State = {
@@ -38,7 +48,10 @@ const state: State = {
   idToken: undefined,
   user: undefined,
   emoticonSets: undefined,
-}
+  extensionAuth: undefined,
+  currentPage: 'ViewPage',
+  isOwner: false,
+};
 
 export default new Vuex.Store({
   state,
@@ -63,6 +76,15 @@ export default new Vuex.Store({
     },
     setEmoticonSets(state, emoticonSets) {
       state.emoticonSets = emoticonSets;
+    },
+    setExtensionAuth(state, extensionAuth) {
+      state.extensionAuth = extensionAuth;
+    },
+    setIsOwner(state, isOwner) {
+      state.isOwner = isOwner;
+    },
+    setCurrentPage(state, page) {
+      state.currentPage = page;
     },
   },
   actions: {
@@ -120,6 +142,26 @@ export default new Vuex.Store({
     },
     setAccessToken(context, accessToken) {
       context.commit('setAccessToken', accessToken);
-    }
+    },
+    async saveExtensionAuth(context, auth: ExtensionAuth) {
+      context.commit('setExtensionAuth', auth);
+      await context.dispatch('loadingFeeds', auth.channelId);
+      context.dispatch('checkWhetherOwner');
+    },
+    checkWhetherOwner(context) {
+      const {
+        extensionAuth,
+      } = context.state;
+
+      if (!extensionAuth) {
+        context.commit('setIsOwner', false);
+        return;
+      }
+
+      context.commit('setIsOwner', extensionAuth.userId === `U${extensionAuth.channelId}`);
+    },
+    changePage(context, pageName) {
+      context.commit('setCurrentPage', pageName);
+    },
   },
 });
