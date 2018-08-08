@@ -1,14 +1,9 @@
 <template>
   <div class="container">
-    {{ extensionAuth.token }}
     <button v-on:click="back">뒤로 가기</button>
-    <div class="editor" contenteditable="true" @input="onUpdateContent">
-    </div>
+    <div class="editor" contenteditable="true" @input="onUpdateContent"></div>
     <button v-on:click="save">저장하기</button>
-    <!-- <button v-on:click="login">로그인하기</button>
-    <button v-on:click="fetchUser">fetchUser</button>
-    <button v-on:click="fetchUserEmotes">fetchUserEmotes</button> -->
-    <!-- <EmotesComponent /> -->
+    <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
   </div>
 </template>
 
@@ -20,7 +15,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import EmotesComponent from "@/components/Emotes.vue";
-import { TWITCH_CLIENT_ID } from "../api/twitchApi";
+import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 
 declare var Twitch: any;
 
@@ -54,8 +49,14 @@ export default class Edit extends Vue {
     );
     const json = await response.json();
     console.log(json);
-    alert("성공적으로 저장되었습니다.");
     this.changePage("ViewPage");
+  }
+  openEmoteSyncPage() {
+    const redirectUri = "http://192.168.0.2:8090";
+    const responseType = "token+id_token";
+    const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
+    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_APP_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
+    window.open(url);
   }
 }
 </script>

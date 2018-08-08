@@ -16,14 +16,6 @@ function generateRandomContent(length) {
   return text;
 }
 
-function extractData(keyValueStrings: string[], key: string): string {
-  const data = keyValueStrings.find(keyValueString => keyValueString.indexOf(key) === 0);
-  if (!data) {
-    return '';
-  }
-  return data.substring(`${key}=`.length);
-}
-
 interface State {
   feeds: Feed[];
   accessToken?: string;
@@ -103,17 +95,6 @@ export default new Vuex.Store({
       feeds.forEach((feed) => {
         context.commit('addFeed', feed);
       });
-    },
-    fetchAccessTokenAndIdToken(context) {
-      if (window.location.hash.indexOf('access_token') < 0) {
-        return;
-      }
-      const data = window.location.hash.replace('#', '').split('&');
-      const accessToken = extractData(data, 'access_token');
-      const idToken = extractData(data, 'id_token');
-
-      context.commit('setAccessToken', accessToken);
-      context.commit('setIdToken', idToken);
     },
     async fetchUser(context) {
       const {
