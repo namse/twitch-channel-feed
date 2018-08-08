@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
-const authenticate = require('./authenticate');
+const authenticateExtensionToken = require('./authenticateExtensionToken');
 
-var s3 = new AWS.S3();
+const s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
 
 module.exports.post = async (event, context, callback) => {
@@ -11,7 +11,7 @@ module.exports.post = async (event, context, callback) => {
       token,
       content,
     } = body;
-    const decoded = await authenticate(token);
+    const decoded = await authenticateExtensionToken(token);
     const {
       role,
       user_id: userId,
