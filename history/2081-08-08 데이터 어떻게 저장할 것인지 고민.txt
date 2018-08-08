@@ -1,0 +1,28 @@
+내 고민은 무엇입니까?
+
+데이터를 가져와야 하는 경우의 수
+
+
+- 글쓴이가 'Bloodtrail'이라고 쓸 경우
+--> 단어로 검색할 수 있어야함
+--> I should query image by word
+--- Difficult
+
+- 채널피드 에디터에서 사용가능한 트위치 이모티콘이 로딩되어야 함.
+--> 어떤 데이터를 로딩해서 쑤셔박을건지 잘 생각해봐야함.
+--> I should think about which data I will and how I put that data into feed editor
+--- (emote_set)=set_id + each emote data[emote_id, code]
+--- and My User ID
+--- What I thought is, save (key, value) = (userId, all available emote information w)
+
+- 사용가능한 트위치 이모티콘 싱크 맞출때 (Sync available Twitch emote)
+--> 이거는 위의 사용 케이스에 맞춰야할 것 같음
+--> I think it will be fixed by above usecase
+-- seperate every emote data by emote_set_id
+
+
+4 information for emote
+1. url of pic
+2. id of emote
+3. set_id of emote
+4. code (or regex) like 'BloodTrail or SSSsss'
