@@ -10,7 +10,7 @@ module.exports.post = async (event, context, callback) => {
     const {
       token,
       userId,
-      emotes,
+      emotesMap,
     } = body;
     const decoded = await authenticateIdToken(token);
     const {
@@ -23,7 +23,7 @@ module.exports.post = async (event, context, callback) => {
     await s3.putObject({
       Bucket: TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET,
       Key: userId,
-      Body: JSON.stringify(emotes),
+      Body: JSON.stringify(emotesMap),
     }).promise();
 
     const response = {

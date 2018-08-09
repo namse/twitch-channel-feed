@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import uuid from 'uuid/v4';
 import { getUserEmotes, getUser, getProfilePicture, getUsername } from '@/api/twitchApi';
 import { getFeedContents } from '@/api/awsApi';
+import { getEmotesAvailable } from '@/api/backendApi';
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ interface State {
   extensionAuth?: ExtensionAuth;
   currentPage: string;
   isOwner: boolean;
+  emotesMap: EmotesMap;
 };
 
 const state: State = {
@@ -36,6 +38,7 @@ const state: State = {
   extensionAuth: undefined,
   currentPage: 'ViewPage',
   isOwner: false,
+  emotesMap: {},
 };
 
 export default new Vuex.Store({
@@ -71,9 +74,12 @@ export default new Vuex.Store({
     setCurrentPage(state, page) {
       state.currentPage = page;
     },
+    setEmotesAvailable(state, emotesMap) {
+      state.emotesMap = emotesMap;
+    }
   },
   actions: {
-    async loadingFeeds(context, userId) {
+    async loadFeeds(context, userId) {
       const {
       } = context.state;
       const feedContents = await getFeedContents(userId);
@@ -125,8 +131,11 @@ export default new Vuex.Store({
     },
     async saveExtensionAuth(context, auth: ExtensionAuth) {
       context.commit('setExtensionAuth', auth);
-      await context.dispatch('loadingFeeds', auth.channelId);
+      await context.dispatch('loadFeeds', auth.channelId);
       context.dispatch('checkWhetherOwner');
+      if (context.state.isOwner) {
+        await context.dispatch('fetchEmotesAvailable', auth.channelId);
+      }
     },
     checkWhetherOwner(context) {
       const {
@@ -144,6 +153,10 @@ export default new Vuex.Store({
     },
     changePage(context, pageName) {
       context.commit('setCurrentPage', pageName);
+    },
+    async fetchEmotesAvailable(context, userId) {
+      const emotesAvailable = await getEmotesAvailable(userId);
+      context.commit('setEmotesAvailable', emotesAvailable);
     },
   },
 });

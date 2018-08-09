@@ -2,6 +2,7 @@
   <div class="container">
     <button v-on:click="back">뒤로 가기</button>
     <div class="editor" contenteditable="true" @input="onUpdateContent"></div>
+    <EmotesComponent />
     <button v-on:click="save">저장하기</button>
     <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
   </div>
@@ -27,7 +28,9 @@ declare var Twitch: any;
 })
 export default class Edit extends Vue {
   @State("extensionAuth") extensionAuth!: ExtensionAuth;
+
   @Action("changePage") changePage: any;
+  @Action("fetchEmotesAvailable") fetchEmotesAvailable: any;
 
   content: string = "";
 

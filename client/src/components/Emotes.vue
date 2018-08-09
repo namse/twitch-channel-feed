@@ -1,20 +1,26 @@
 <template>
   <div class="container">
-    <div>
-      asdf
-      <a v-on:click="clickEmote">
-        <img  src="/logo.png"/>
-      </a>
+    <div class="emote-picker-block" v-for="emotes in emotesMap" :key="emotes[0].emoteSetId">
+      <div class="emote-picker-container tooltip-wrapper" v-for="emote in emotes" :key="emote.id">
+        <button class="emote-picker-button" v-on:click="clickEmote(emote)">
+          <img class="emote-picker-image" :src="emote.url"/>
+        </button>
+        <span class="tooltip-text">{{emote.regex}}</span>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { State, Action } from "vuex-class";
 
 @Component
 export default class EmotesComponent extends Vue {
-  clickEmote() {
+  @State("emotesMap") emotesMap!: EmotesMap;
+
+  clickEmote(emote: Emote) {
+    console.log(emote);
     console.log("fuck");
   }
 }
@@ -26,27 +32,78 @@ export default class EmotesComponent extends Vue {
   width: 100%;
   height: 100%;
 }
-.profile-image {
-  height: 40px;
-  width: 40px;
-  margin-right: 8px;
-  float: left;
+.emote-picker-block {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  border-bottom: 1px solid #2c2541;
 }
-.username-date-container {
+.emote-picker-container {
+  width: 2.3rem;
+  height: 2.3rem;
+}
+
+.emote-picker-button {
+  width: 2.2rem;
+  height: 2.2rem;
+
+  background-color: rgba(75, 54, 124, 0.2);
+  cursor: pointer;
+  cursor: pointer;
+  justify-content: center !important;
+  align-items: center !important;
+  display: flex !important;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  border: none;
+  background: none;
+  border-radius: 0;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+.emote-picker-image {
+  max-height: 2.2rem;
   width: 100%;
-  height: 40px;
 }
-.username {
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.38;
-  margin-top: 0px;
-  margin-bottom: 2px;
+
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
 }
-.date {
-  font-size: 12px;
+
+.tooltip-wrapper .tooltip-text {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
 }
-.content {
-  overflow-wrap: break-word;
+
+.tooltip-wrapper .tooltip-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltip-wrapper:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 </style>

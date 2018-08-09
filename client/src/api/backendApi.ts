@@ -1,15 +1,5 @@
-declare type EmotesOnS3 = {
-  id: string;
-  code: string;
-  emoteSetId: string;
-  url: string;
-}[];
-
-declare type EmotesAvaialbleToUser = {
-  [emoteSetId: string]: EmotesOnS3
-};
-
-const EMOTE_INFO_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes';
+const EMOTES_INFO_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes';
+const EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes-available-to-user';
 const BACKEND_ENDPOINT = 'https://yaauic5zfh.execute-api.ap-northeast-2.amazonaws.com/dev';
 
 async function check2xx(response: Response) {
@@ -21,10 +11,9 @@ async function check2xx(response: Response) {
   }
 }
 
-export async function getEmotesinfo(emoteSetId: string): Promise<EmotesOnS3> {
-  const response = await fetch(`${EMOTE_INFO_S3_BUCKET_ENDPOINT}/${emoteSetId}`);
-  const emotesOnS3: EmotesOnS3 = await response.json();
-  return emotesOnS3;
+export async function getEmotesinfo(emoteSetId: string): Promise<Emote[]> {
+  const response = await fetch(`${EMOTES_INFO_S3_BUCKET_ENDPOINT}/${emoteSetId}`);
+  return await response.json();
 }
 
 export async function savePost(token: string, content: string) {
@@ -42,7 +31,7 @@ export async function savePost(token: string, content: string) {
 }
 
 
-export async function saveEmotes(token: string, userId: string, emotes: EmotesAvaialbleToUser) {
+export async function saveEmotes(token: string, userId: string, emotes: EmotesMap) {
   const response = await fetch(
     `${BACKEND_ENDPOINT}/emote`,
     {
@@ -55,4 +44,9 @@ export async function saveEmotes(token: string, userId: string, emotes: EmotesAv
     },
   );
   await check2xx(response);
+}
+
+export async function getEmotesAvailable(userId: string): Promise<EmotesMap> {
+  const response = await fetch(`${EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT}/${userId}`);
+  return await response.json();
 }

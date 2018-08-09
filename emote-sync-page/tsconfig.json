@@ -30,9 +30,12 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "../client/src/**/*.d.ts",
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../client/src/shims-tsx.d.ts",
+    "../client/src/shims-vue.d.ts"
   ]
 }

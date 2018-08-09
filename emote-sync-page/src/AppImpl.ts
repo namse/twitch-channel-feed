@@ -23,16 +23,16 @@ export default class App extends Vue {
     const emoticonSets = await getUserEmotes(accessToken, userId);
 
     console.log(emoticonSets);
-    const emotesAvaialbleToUser: any = {};
+    const emotesMapAvaialbleToUser: any = {};
     await Promise.all(Object.keys(emoticonSets).map(async emoteSetId => {
       console.log(emoteSetId);
       // Access S3 bucket with emoteSetId
-      const emotesOnS3 = await getEmotesinfo(emoteSetId)
-      emotesAvaialbleToUser[emoteSetId] = emotesOnS3;
+      const emotes = await getEmotesinfo(emoteSetId)
+      emotesMapAvaialbleToUser[emoteSetId] = emotes;
     }));
-    console.log(emotesAvaialbleToUser);
+    console.log(emotesMapAvaialbleToUser);
 
-    await saveEmotes(idToken, userId, emotesAvaialbleToUser);
+    await saveEmotes(idToken, userId, emotesMapAvaialbleToUser);
   }
   extractData(keyValueStrings: string[], key: string): string {
     const data = keyValueStrings.find(keyValueString => keyValueString.indexOf(key) === 0);
