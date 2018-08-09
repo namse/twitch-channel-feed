@@ -1,6 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import HelloWorld from './components/HelloWorld.vue';
 import { getUser, getUserEmotes } from '../../client/src/api/twitchApi'
+import { getEmotesinfo, saveEmotes } from '../../client/src/api/backendApi'
 
 @Component({
   components: {
@@ -13,10 +14,25 @@ export default class App extends Vue {
 
   async mounted() {
     this.fetchAccessTokenAndIdToken();
+    const { accessToken, idToken } = this;
+
     const user = await getUser(this.accessToken);
+    const { _id: userId } = user;
+
     console.log(user);
-    const emotes = await getUserEmotes(this.accessToken, user._id);
-    console.log(emotes);
+    const emoticonSets = await getUserEmotes(accessToken, userId);
+
+    console.log(emoticonSets);
+    const emotesAvaialbleToUser: any = {};
+    await Promise.all(Object.keys(emoticonSets).map(async emoteSetId => {
+      console.log(emoteSetId);
+      // Access S3 bucket with emoteSetId
+      const emotesOnS3 = await getEmotesinfo(emoteSetId)
+      emotesAvaialbleToUser[emoteSetId] = emotesOnS3;
+    }));
+    console.log(emotesAvaialbleToUser);
+
+    await saveEmotes(idToken, userId, emotesAvaialbleToUser);
   }
   extractData(keyValueStrings: string[], key: string): string {
     const data = keyValueStrings.find(keyValueString => keyValueString.indexOf(key) === 0);

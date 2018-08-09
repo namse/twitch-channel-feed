@@ -1,6 +1,13 @@
 export const TWITCH_APP_CLIENT_ID = 'nmbqgdv3qbinn9z3088sw816t834jx';
 
-export async function getUserEmotes(accessToken: string, userId: string) {
+declare type UserEmotesResponse = {
+  [EmoteSetId: string]: {
+    code: string,
+    id: number,
+  }[],
+};
+
+export async function getUserEmotes(accessToken: string, userId: string): Promise<UserEmotesResponse> {
   const response = await fetch(`https://api.twitch.tv/kraken/users/${userId}/emotes`, {
     headers: {
       'Authorization': `OAuth ${accessToken}`,

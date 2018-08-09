@@ -16,9 +16,18 @@ emoticons.forEach(emote => {
 
   const set = emoteSetDictionary[setId];
 
-  set.push(emote);
+  if (!emote.images) {
+    console.log(setId);
+    console.log(emote);
+    return;
+  }
+  set.push({
+    id: emote.id,
+    regex: emote.regex,
+    url: emote.images.url,
+    emoteSetId: setId,
+  });
 });
-
 console.log('filtering finished');
 
 function uploadData(body, key) {
@@ -37,8 +46,14 @@ function uploadData(body, key) {
   })
 }
 
+let i = 0;
 Promise.map(Object.keys(emoteSetDictionary), (setId) => {
-  return uploadData(emoteSetDictionary[setId], setId);
-}, { concurrency: 300 }); // <---- at most 10 http requests at a time
+  return uploadData(emoteSetDictionary[setId], setId).then(() => {
+    i += 1;
+    if (i % 1000 === 0) {
+      console.log(i);
+    }
+  });
+}, { concurrency: 256 }); // <---- at most 10 http requests at a time
 
 

@@ -16,6 +16,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import EmotesComponent from "@/components/Emotes.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
+import { savePost } from "../api/backendApi";
 
 declare var Twitch: any;
 
@@ -37,18 +38,7 @@ export default class Edit extends Vue {
     this.changePage("ViewPage");
   }
   async save() {
-    const response = await fetch(
-      "https://yaauic5zfh.execute-api.ap-northeast-2.amazonaws.com/dev/feed",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          token: this.extensionAuth.token,
-          content: this.content
-        })
-      }
-    );
-    const json = await response.json();
-    console.log(json);
+    await savePost(this.extensionAuth.token, this.content);
     this.changePage("ViewPage");
   }
   openEmoteSyncPage() {

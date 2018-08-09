@@ -100,6 +100,9 @@ export default new Vuex.Store({
       const {
         accessToken,
       } = context.state;
+      if (!accessToken) {
+        throw new Error('No Access Token');
+      }
       const user = await getUser(accessToken);
       context.commit('setUser', user);
     },
@@ -110,6 +113,9 @@ export default new Vuex.Store({
       } = context.state;
       if (!user) {
         throw new Error('No Twitch User logined');
+      }
+      if (!accessToken) {
+        throw new Error('No Access Token');
       }
       const emoticonSets = await getUserEmotes(accessToken, user._id);
       context.commit('setEmoticonSets', emoticonSets);
