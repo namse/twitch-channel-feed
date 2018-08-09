@@ -12,8 +12,8 @@
   },
   "scripts": {
     "deploy": "serverless deploy -v",
-    "deploy-function": "serverless deploy function -f hello",
-    "log": "serverless logs -f hello -t"
+    "deploy-function": "serverless deploy function -f",
+    "log": "serverless logs -t -f"
   },
   "author": "",
   "license": "ISC"

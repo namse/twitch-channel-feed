@@ -17,7 +17,11 @@ function getKey(header, callback) {
 }
 
 async function authenticateIdToken(token) {
-  return jwt.verify(token, getKey, decoded);
+  return new Promise((resolve, reject) => {
+    return jwt.verify(token, getKey, (err, decoded) => {
+      err ? reject(err) : resolve(decoded);
+    });
+  });
 }
 
 module.exports = authenticateIdToken;

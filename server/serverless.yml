@@ -29,13 +29,14 @@ package:
    - secrets.yml
 
 functions:
-  hello:
+  feed:
     handler: feed.post
     events:
       - http:
           path: feed
           method: post
-    handler: emote.emote
+  emote:
+    handler: emote.post
     events:
       - http:
           path: emote
