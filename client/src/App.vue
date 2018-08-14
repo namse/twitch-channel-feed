@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts">
-import EmotesComponent from "@/components/Emotes.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
 import ViewPage from "@/pages/View.vue";

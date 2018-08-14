@@ -6,7 +6,7 @@
     </div>
     <div ref="editor" class="editor" contenteditable="true" @input="onUpdateContent"></div>
     <div class="bottom">
-      <EmotesComponent :clickEmote="onClickEmote"/>
+      <EmoteInputComponent :clickEmote="onClickEmote"/>
       <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
     </div>
   </div>
@@ -19,7 +19,7 @@
 //     3. 사진 넣을 수 있어야 하고요 - Optional
 import { Component, Vue } from "vue-property-decorator";
 import { State, Action } from "vuex-class";
-import EmotesComponent from "@/components/Emotes.vue";
+import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
 
@@ -27,7 +27,7 @@ declare var Twitch: any;
 
 @Component({
   components: {
-    EmotesComponent
+    EmoteInputComponent
   }
 })
 export default class Edit extends Vue {
@@ -60,18 +60,39 @@ export default class Edit extends Vue {
     window.open(url);
   }
   onClickEmote(emote: Emote) {
-    console.log(emote);
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
 
     const imageTag = document.createElement("img");
     imageTag.src = emote.url;
+    imageTag.onclick = this.onEmoteImageClick.bind(this);
 
     range.insertNode(imageTag);
     range.setStartAfter(imageTag);
     range.setEndAfter(imageTag);
 
     this.$refs.editor.focus();
+  }
+  onEmoteImageClick(event: MouseEvent) {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const { srcElement, clientX } = event;
+    if (!srcElement) {
+      console.log("no srcElement");
+      return;
+    }
+
+    const { left, width } = srcElement.getBoundingClientRect();
+    const isLeft = clientX - left < width / 2;
+    console.log(isLeft);
+
+    if (isLeft) {
+      range.setStartBefore(srcElement);
+      range.setEndBefore(srcElement);
+    } else {
+      range.setStartAfter(srcElement);
+      range.setEndAfter(srcElement);
+    }
   }
 }
 </script>
