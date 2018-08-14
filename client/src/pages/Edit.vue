@@ -4,9 +4,9 @@
       <button v-on:click="back">뒤로 가기</button>
       <button class="save" v-on:click="save">저장하기</button>
     </div>
-    <div class="editor" contenteditable="true" @input="onUpdateContent"></div>
+    <div ref="editor" class="editor" contenteditable="true" @input="onUpdateContent"></div>
     <div class="bottom">
-      <EmotesComponent />
+      <EmotesComponent :clickEmote="onClickEmote"/>
       <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
     </div>
   </div>
@@ -36,6 +36,10 @@ export default class Edit extends Vue {
   @Action("changePage") changePage: any;
   @Action("fetchEmotesAvailable") fetchEmotesAvailable: any;
 
+  $refs!: {
+    editor: HTMLDivElement;
+  };
+
   content: string = "";
 
   onUpdateContent(event) {
@@ -54,6 +58,20 @@ export default class Edit extends Vue {
     const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
     const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_APP_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
     window.open(url);
+  }
+  onClickEmote(emote: Emote) {
+    console.log(emote);
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+
+    const imageTag = document.createElement("img");
+    imageTag.src = emote.url;
+
+    range.insertNode(imageTag);
+    range.setStartAfter(imageTag);
+    range.setEndAfter(imageTag);
+
+    this.$refs.editor.focus();
   }
 }
 </script>

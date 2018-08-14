@@ -18,11 +18,8 @@ import { State, Action } from "vuex-class";
 @Component
 export default class EmotesComponent extends Vue {
   @State("emotesMap") emotesMap!: EmotesMap;
-
-  clickEmote(emote: Emote) {
-    console.log(emote);
-    console.log("fuck");
-  }
+  @Prop({ type: Function, default: undefined })
+  clickEmote!: (emote: Emote) => void;
 }
 </script>
 
