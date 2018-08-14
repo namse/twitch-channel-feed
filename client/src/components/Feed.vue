@@ -1,11 +1,7 @@
 <template>
   <div class="container">
     <header>
-      <img class="profile-image" v-bind:src="feed.profilePictureUrl"/>
-      <div class="username-date-container">
-        <h5 class="username">{{feed.username}}</h5>
-        <span class="date">{{feed.date}}</span>
-      </div>
+      <span class="date">{{fromDateString}}</span>
     </header>
     <div class="content" v-html="feed.content"></div>
   </div>
@@ -13,38 +9,30 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import * as moment from "moment";
 
 @Component
 export default class FeedComponent extends Vue {
   @Prop() private feed!: Feed;
+
+  readonly fromDateString: string = moment(this.feed.date).fromNow();
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .container {
-  width: 100%;
   height: 100%;
-}
-.profile-image {
-  height: 40px;
-  width: 40px;
-  margin-right: 8px;
-  float: left;
-}
-.username-date-container {
-  width: 100%;
-  height: 40px;
-}
-.username {
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 1.38;
-  margin-top: 0px;
-  margin-bottom: 2px;
+  padding: 15px 0;
+  margin: 0 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  border-bottom-color: hsla(0, 0%, 100%, 0.1);
 }
 .date {
-  font-size: 12px;
+  color: #b19dd8;
 }
 .content {
   overflow-wrap: break-word;

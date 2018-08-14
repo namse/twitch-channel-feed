@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import uuid from 'uuid/v4';
 import { getUserEmotes, getUser, getProfilePicture, getUsername } from '@/api/twitchApi';
-import { getFeedContents } from '@/api/awsApi';
+import { getFeeds } from '@/api/awsApi';
 import { getEmotesAvailable } from '@/api/backendApi';
 
 Vue.use(Vuex);
@@ -82,20 +82,7 @@ export default new Vuex.Store({
     async loadFeeds(context, userId) {
       const {
       } = context.state;
-      const feedContents = await getFeedContents(userId);
-      const profilePictureUrl = await getProfilePicture(userId);
-      const username = await getUsername(userId);
-
-      // TODO : check empty feed
-      const feeds: Feed[] = feedContents.map((content) => {
-        return {
-          id: uuid(),
-          username,
-          profilePictureUrl,
-          date: new Date(), // TODO
-          content,
-        };
-      });
+      const feeds = await getFeeds(userId);
       context.commit('clearFeed');
 
       feeds.forEach((feed) => {
@@ -131,7 +118,9 @@ export default new Vuex.Store({
     },
     async saveExtensionAuth(context, auth: ExtensionAuth) {
       context.commit('setExtensionAuth', auth);
+
       await context.dispatch('loadFeeds', auth.channelId);
+
       context.dispatch('checkWhetherOwner');
       if (context.state.isOwner) {
         await context.dispatch('fetchEmotesAvailable', auth.channelId);
@@ -151,8 +140,11 @@ export default new Vuex.Store({
 
       context.commit('setIsOwner', isOwner);
     },
-    changePage(context, pageName) {
+    async changePage(context, pageName) {
       context.commit('setCurrentPage', pageName);
+      if (pageName === 'ViewPage' && context.state.extensionAuth) {
+        await context.dispatch('loadFeeds', context.state.extensionAuth.channelId);
+      }
     },
     async fetchEmotesAvailable(context, userId) {
       const emotesAvailable = await getEmotesAvailable(userId);

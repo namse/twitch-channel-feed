@@ -34,6 +34,7 @@ export default class App extends Vue {
 body {
   overflow: hidden;
   margin: 0px;
+  font-size: 12px;
 }
 
 ::-webkit-scrollbar {

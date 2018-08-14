@@ -6,7 +6,7 @@
     >Post New Channel Feed</button>
     {{userId}}
     {{channelId}}
-    <div v-for="feed in feeds" :key="feed.id">
+    <div v-for="(feed, index) in feeds" :key="index">
       <FeedComponent :feed="feed"/>
     </div>
   </div>

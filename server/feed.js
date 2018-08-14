@@ -41,7 +41,10 @@ module.exports.post = async (event, context, callback) => {
     const {
       feeds,
     } = recent;
-    feeds.unshift(content);
+    feeds.unshift({
+      date: new Date(),
+      content,
+    });
 
     await s3.putObject({
       Bucket: bucketName,
