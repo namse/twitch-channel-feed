@@ -65,34 +65,13 @@ export default class Edit extends Vue {
 
     const imageTag = document.createElement("img");
     imageTag.src = emote.url;
-    imageTag.onclick = this.onEmoteImageClick.bind(this);
+    imageTag.className = "emote-image";
 
     range.insertNode(imageTag);
     range.setStartAfter(imageTag);
     range.setEndAfter(imageTag);
 
     this.$refs.editor.focus();
-  }
-  onEmoteImageClick(event: MouseEvent) {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const { srcElement, clientX } = event;
-    if (!srcElement) {
-      console.log("no srcElement");
-      return;
-    }
-
-    const { left, width } = srcElement.getBoundingClientRect();
-    const isLeft = clientX - left < width / 2;
-    console.log(isLeft);
-
-    if (isLeft) {
-      range.setStartBefore(srcElement);
-      range.setEndBefore(srcElement);
-    } else {
-      range.setStartAfter(srcElement);
-      range.setEndAfter(srcElement);
-    }
   }
 }
 </script>
@@ -119,5 +98,10 @@ export default class Edit extends Vue {
   overflow-x: hidden;
   height: 150px;
   text-align: center;
+}
+</style>
+<style>
+.emote-image {
+  pointer-events: none;
 }
 </style>
