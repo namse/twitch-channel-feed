@@ -53,7 +53,8 @@ export default class Edit extends Vue {
     this.changePage("ViewPage");
   }
   openEmoteSyncPage() {
-    const redirectUri = "http://192.168.0.2:8090";
+    const redirectUri =
+      "http://twitch-channel-feed-emote-sync-page.s3-website.ap-northeast-2.amazonaws.com";
     const responseType = "token+id_token";
     const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
     const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_APP_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
