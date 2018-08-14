@@ -4,4 +4,5 @@ module.exports = {
     port: 8443,
     https: true,
   },
+  baseUrl: '',
 };
