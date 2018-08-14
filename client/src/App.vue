@@ -32,6 +32,31 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
+body {
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 6px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #201c2b;
+  border-radius: 7px;
+  opacity: 0.7;
+  box-shadow: 0 0 1px 1px hsla(0, 0%, 100%, 0.25);
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+}
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
