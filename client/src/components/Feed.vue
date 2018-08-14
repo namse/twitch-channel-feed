@@ -7,7 +7,7 @@
         <span class="date">{{feed.date}}</span>
       </div>
     </header>
-    <div class="content">{{feed.content}}</div>
+    <div class="content" v-html="feed.content"></div>
   </div>
 </template>
 

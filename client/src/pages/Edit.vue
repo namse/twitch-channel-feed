@@ -42,8 +42,8 @@ export default class Edit extends Vue {
 
   content: string = "";
 
-  onUpdateContent(event) {
-    this.content = event.target.innerText;
+  onUpdateContent() {
+    this.content = this.$refs.editor.innerHTML;
   }
   back() {
     this.changePage("ViewPage");
@@ -72,6 +72,7 @@ export default class Edit extends Vue {
     range.setEndAfter(imageTag);
 
     this.$refs.editor.focus();
+    this.onUpdateContent();
   }
 }
 </script>
