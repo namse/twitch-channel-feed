@@ -1,10 +1,14 @@
 <template>
   <div class="container">
-    <button v-on:click="back">뒤로 가기</button>
+    <div class="header">
+      <button v-on:click="back">뒤로 가기</button>
+      <button class="save" v-on:click="save">저장하기</button>
+    </div>
     <div class="editor" contenteditable="true" @input="onUpdateContent"></div>
-    <EmotesComponent />
-    <button v-on:click="save">저장하기</button>
-    <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
+    <div class="bottom">
+      <EmotesComponent />
+      <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
+    </div>
   </div>
 </template>
 
@@ -55,7 +59,26 @@ export default class Edit extends Vue {
 </script>
 <style scoped>
 .editor {
-  min-height: 200px;
+  height: 320px;
+  overflow-y: auto;
   border: 1px solid blueviolet;
+  border-radius: 7px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+.editor:focus {
+  outline: 0;
+}
+.header {
+  height: 30px;
+}
+.save {
+  float: right;
+}
+.bottom {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 150px;
+  text-align: center;
 }
 </style>

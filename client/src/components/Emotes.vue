@@ -30,7 +30,6 @@ export default class EmotesComponent extends Vue {
 <style scoped lang="scss">
 .container {
   width: 100%;
-  height: 100%;
 }
 .emote-picker-block {
   display: flex !important;
