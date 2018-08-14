@@ -1,13 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
 import { getUser, getUserEmotes } from '../../client/src/api/twitchApi'
 import { getEmotesinfo, saveEmotes } from '../../client/src/api/backendApi'
 
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
+@Component
 export default class App extends Vue {
   accessToken: string = '';
   idToken: string = '';
@@ -19,20 +14,17 @@ export default class App extends Vue {
     const user = await getUser(this.accessToken);
     const { _id: userId } = user;
 
-    console.log(user);
     const emoticonSets = await getUserEmotes(accessToken, userId);
 
-    console.log(emoticonSets);
     const emotesMapAvaialbleToUser: any = {};
     await Promise.all(Object.keys(emoticonSets).map(async emoteSetId => {
-      console.log(emoteSetId);
       // Access S3 bucket with emoteSetId
       const emotes = await getEmotesinfo(emoteSetId)
       emotesMapAvaialbleToUser[emoteSetId] = emotes;
     }));
-    console.log(emotesMapAvaialbleToUser);
 
     await saveEmotes(idToken, userId, emotesMapAvaialbleToUser);
+    alert('정상적으로 저장되었습니다.');
   }
   extractData(keyValueStrings: string[], key: string): string {
     const data = keyValueStrings.find(keyValueString => keyValueString.indexOf(key) === 0);
