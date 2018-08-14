@@ -64,6 +64,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   // text-align: center;
   color: #ffffff;
+  height: 500px;
 }
 #nav {
   padding: 30px;

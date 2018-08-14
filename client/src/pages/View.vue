@@ -4,8 +4,6 @@
       v-if="isOwner"
       v-on:click="changePage('EditPage')"
     >Post New Channel Feed</button>
-    {{userId}}
-    {{channelId}}
     <div v-for="(feed, index) in feeds" :key="index">
       <FeedComponent :feed="feed"/>
     </div>
@@ -17,8 +15,6 @@ import { Component, Vue } from "vue-property-decorator";
 import FeedComponent from "@/components/Feed.vue";
 import { State, Action } from "vuex-class";
 
-declare var Twitch: any;
-
 @Component({
   components: {
     FeedComponent
@@ -29,10 +25,12 @@ export default class ViewPage extends Vue {
 
   @State("feeds") feeds!: Feed[];
   @State("isOwner") isOwner!: boolean;
-
-  // $route!: Route;
-  twitch: any = Twitch;
-  userId: string = "";
-  channelId: string = "";
 }
 </script>
+<style>
+.view {
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: 100%;
+}
+</style>
