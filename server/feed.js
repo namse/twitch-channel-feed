@@ -11,6 +11,16 @@ module.exports.post = async (event, context, callback) => {
       token,
       content,
     } = body;
+
+    const MAX_WIDTH = 500;
+    const MAX_HEIGHT = 1000;
+    const BASE64_BYTE_RATE = 8 / 6;
+    const MAX_CONTENT_LENGTH = MAX_WIDTH * MAX_HEIGHT * BASE64_BYTE_RATE;
+
+    if (content.length > MAX_CONTENT_LENGTH) {
+      throw new Error(`Too big content: ${content.length}`);
+    }
+
     const decoded = await authenticateExtensionToken(token);
     const {
       role,

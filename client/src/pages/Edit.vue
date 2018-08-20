@@ -2,9 +2,13 @@
   <div class="container">
     <div class="header">
       <button v-on:click="back">뒤로 가기</button>
+      <button v-on:click="onClickAddImageButton">
+        <input type="file" ref="imageFileInput" accept="image/*" style="display:none" @change="onImageFileUpload">
+        <font-awesome-icon icon="image" /> 사진 추가
+      </button>
       <button class="save" v-on:click="save">저장하기</button>
     </div>
-    <div ref="editor" class="editor" contenteditable="true" @input="onUpdateContent"></div>
+    <div ref="editor" class="editor" contenteditable="true"></div>
     <div class="bottom">
       <EmoteInputComponent :clickEmote="onClickEmote"/>
       <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
@@ -22,6 +26,7 @@ import { State, Action } from "vuex-class";
 import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
+import compressImage from '../utils/compressImage';
 
 declare var Twitch: any;
 
@@ -36,21 +41,30 @@ export default class Edit extends Vue {
   @Action("changePage") changePage: any;
   @Action("fetchEmotesAvailable") fetchEmotesAvailable: any;
 
+  readonly PAGE_WIDTH = 500;
+  readonly IMAGE_MARGIN = 10;
+
   $refs!: {
     editor: HTMLDivElement;
+    imageFileInput: HTMLInputElement;
   };
 
-  content: string = "";
+  textReplaceMap: {[text: string]: string} = {};
+  compressingJobs: Promise<any>[] = [];
 
-  onUpdateContent() {
-    this.content = this.$refs.editor.innerHTML;
-  }
   back() {
     this.changePage("ViewPage");
   }
   async save() {
-    await savePost(this.extensionAuth.token, this.content);
-    this.changePage("ViewPage");
+    await Promise.all(this.compressingJobs);
+    const content = this.replaceAll(this.$refs.editor.innerHTML);
+    try {
+      await savePost(this.extensionAuth.token, content);
+      this.changePage("ViewPage");
+    } catch(err) {
+      alert(`다음과 같은 이유로 글을 저장하지 못하였습니다. - ${err}`);
+      console.error(err);
+    }
   }
   openEmoteSyncPage() {
     const redirectUri =
@@ -61,19 +75,54 @@ export default class Edit extends Vue {
     window.open(url);
   }
   onClickEmote(emote: Emote) {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-
     const imageTag = document.createElement("img");
     imageTag.src = emote.url;
     imageTag.className = "emote-image";
 
-    range.insertNode(imageTag);
-    range.setStartAfter(imageTag);
-    range.setEndAfter(imageTag);
+    this.addHtmlElement(imageTag);
+  }
+  onClickAddImageButton() {
+    this.$refs.imageFileInput.click();
+  }
+  async onImageFileUpload(event: Event) {
+    const files = this.$refs.imageFileInput.files;
+    if (!files || !files[0]) {
+      return;
+    }
+
+    const file = files[0];
+
+    const url = window.URL.createObjectURL(file);
+
+    const iamgeMaxWidth = this.PAGE_WIDTH - (2 * this.IMAGE_MARGIN);
+
+    const compressingJob = compressImage(file, iamgeMaxWidth);
+    this.compressingJobs.push(compressingJob);
+    compressingJob.then((compressedImageBase64) => {
+      this.textReplaceMap[url] = compressedImageBase64;
+    });
+
+    const imageTag = document.createElement('img');
+    imageTag.src = url;
+    imageTag.className = 'uploaded-image';
+
+    this.addHtmlElement(imageTag);
+  }
+  addHtmlElement(element: HTMLElement) {
+    this.$refs.editor.focus();
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+
+    range.insertNode(element);
+    range.setStartAfter(element);
+    range.setEndAfter(element);
 
     this.$refs.editor.focus();
-    this.onUpdateContent();
+  }
+  replaceAll(content: string): string {
+    return Object.entries(this.textReplaceMap).reduce((prev, [sourceText, destText]) => {
+      return prev.replace(sourceText, destText);
+    }, content);
   }
 }
 </script>
@@ -91,6 +140,8 @@ export default class Edit extends Vue {
 }
 .header {
   height: 30px;
+  display: flex;
+  justify-content: space-between;
 }
 .save {
   float: right;
@@ -105,5 +156,10 @@ export default class Edit extends Vue {
 <style>
 .emote-image {
   pointer-events: none;
+}
+.uploaded-image {
+  display: block;
+  max-width: calc(100% - 20px);
+  margin: 10px;
 }
 </style>
