@@ -50,3 +50,16 @@ export async function getEmotesAvailable(userId: string): Promise<EmotesMap> {
   const response = await fetch(`${EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT}/${userId}`);
   return await response.json();
 }
+
+export type PreSignedUrlResponse = {
+  url: string;
+  fields: { [key: string]: string };
+  key: string;
+};
+
+export async function getPreSignedUrl(token: string): Promise<PreSignedUrlResponse> {
+  const response = await fetch(`${BACKEND_ENDPOINT}/media/preSignedUrl`);
+  await check2xx(response);
+  return response.json();
+}
+

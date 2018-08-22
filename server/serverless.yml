@@ -41,6 +41,11 @@ functions:
       - http:
           path: emote
           method: post
-
+  getPresignedUrl:
+    handler: media/presignedUrl.get
+    events:
+      - http:
+          path: media/preSignedUrl
+          method: get
 custom:
   secrets: ${file(secrets.yml)}
