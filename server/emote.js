@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const authenticateIdToken = require('./authenticateIdToken');
+const authExtTokenHeader = require('./authExtTokenHeader');
 
 const s3 = new AWS.S3();
 const TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET = 'twitch-emotes-available-to-user';
@@ -8,11 +8,10 @@ module.exports.post = async (event, context, callback) => {
   try {
     const body = JSON.parse(event.body);
     const {
-      token,
       userId,
       emotesMap,
     } = body;
-    const decoded = await authenticateIdToken(token);
+    const decoded = await authExtTokenHeader(event.headers);
     const {
       sub,
     } = decoded;

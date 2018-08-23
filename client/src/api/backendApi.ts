@@ -1,8 +1,8 @@
 const EMOTES_INFO_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes';
 const EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes-available-to-user';
-const BACKEND_ENDPOINT = 'https://yaauic5zfh.execute-api.ap-northeast-2.amazonaws.com/dev';
+const BACKEND_ENDPOINT = 'https://4nyg9ttt53.execute-api.ap-northeast-2.amazonaws.com/dev';
 
-async function check2xx(response: Response) {
+export async function check2xx(response: Response) {
   if (response.status >= 200 || response.status < 300) {
     return;
   } else {
@@ -21,8 +21,10 @@ export async function savePost(token: string, content: string) {
     `${BACKEND_ENDPOINT}/feed`,
     {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
-        token,
         content,
       }),
     },
@@ -36,8 +38,10 @@ export async function saveEmotes(token: string, userId: string, emotes: EmotesMa
     `${BACKEND_ENDPOINT}/emote`,
     {
       method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
-        token,
         userId,
         emotes,
       }),
@@ -54,12 +58,32 @@ export async function getEmotesAvailable(userId: string): Promise<EmotesMap> {
 export type PreSignedUrlResponse = {
   url: string;
   fields: { [key: string]: string };
+  mediaId: string;
   key: string;
 };
 
 export async function getPreSignedUrl(token: string): Promise<PreSignedUrlResponse> {
-  const response = await fetch(`${BACKEND_ENDPOINT}/media/preSignedUrl`);
+  const response = await fetch(`${BACKEND_ENDPOINT}/media/preSignedUrl`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   await check2xx(response);
   return response.json();
 }
 
+export type EncodeMediaResponse = {
+  url: string,
+  mime: string,
+};
+
+export async function encodeMedia(token: string, mediaId: string): Promise<EncodeMediaResponse> {
+  const response = await fetch(`${BACKEND_ENDPOINT}/media/${mediaId}/encode`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  await check2xx(response);
+  return response.json();
+}

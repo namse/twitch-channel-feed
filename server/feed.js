@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const authenticateExtensionToken = require('./authenticateExtensionToken');
+const authExtTokenHeader = require('./authExtTokenHeader');
 
 const s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
@@ -8,7 +8,6 @@ module.exports.post = async (event, context, callback) => {
   try {
     const body = JSON.parse(event.body);
     const {
-      token,
       content,
     } = body;
 
@@ -21,7 +20,7 @@ module.exports.post = async (event, context, callback) => {
       throw new Error(`Too big content: ${content.length}`);
     }
 
-    const decoded = await authenticateExtensionToken(token);
+    const decoded = await authExtTokenHeader(event.headers);
     const {
       role,
       user_id: userId,

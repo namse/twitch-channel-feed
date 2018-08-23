@@ -26,7 +26,8 @@ import { State, Action } from "vuex-class";
 import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
-import compressImage from '../utils/compressImage';
+// import compressImage from '../utils/compressImage';
+import uploadMedia from '../utils/uploadMedia';
 
 declare var Twitch: any;
 
@@ -91,19 +92,19 @@ export default class Edit extends Vue {
     }
 
     const file = files[0];
-
-    const url = window.URL.createObjectURL(file);
+    const tempUrl = URL.createObjectURL(file);
 
     const iamgeMaxWidth = this.PAGE_WIDTH - (2 * this.IMAGE_MARGIN);
 
-    const compressingJob = compressImage(file, iamgeMaxWidth);
+    const compressingJob = uploadMedia(this.extensionAuth.token, file);
     this.compressingJobs.push(compressingJob);
-    compressingJob.then((compressedImageBase64) => {
-      this.textReplaceMap[url] = compressedImageBase64;
+    compressingJob.then(({ url, mime }) => {
+      // TODO url settings or change media tag by mime
+      this.textReplaceMap[tempUrl] = url;
     });
 
     const imageTag = document.createElement('img');
-    imageTag.src = url;
+    imageTag.src = tempUrl;
     imageTag.className = 'uploaded-image';
 
     this.addHtmlElement(imageTag);
