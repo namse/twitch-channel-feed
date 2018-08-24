@@ -31,9 +31,6 @@ package:
    - secrets.yml
 
 functions:
-  package:
-    handler: package.index
-    timeout: 60
   feed:
     handler: feed.post
     events:
