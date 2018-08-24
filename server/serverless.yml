@@ -54,6 +54,7 @@ functions:
           cors: ${self:custom.cors}
   encode:
     handler: media/encode.post
+    timeout: 10
     events:
       - http:
           path: media/{mediaId}/encode

@@ -38,16 +38,16 @@ module.exports.post = async (event, context, callback) => {
     const encodedMedia = mime.startsWith('image/') && ext !== 'gif'
       ? await encodeImage(body)
       : await encodeVideo(body);
-
+    console.log('after encode');
     const encodedMediaMime = fileType(encodedMedia).mime;
-
+    
     await s3.putObject({
       Bucket: S3_BUCKET_AFTER_ENCODE,
       Key: key,
       Body: encodedMedia,
       ContentType: encodedMediaMime,
     }).promise();
-
+    
     const response = {
       statusCode: 200,
       headers: {
