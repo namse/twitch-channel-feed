@@ -2,6 +2,7 @@ const AWS = require('aws-sdk');
 const fileType = require('file-type');
 const authExtTokenHeader = require('../authExtTokenHeader');
 const encodeImage = require('./encodeImage');
+const encodeVideo = require('./encodeVideo');
 
 const s3 = new AWS.S3();
 
@@ -28,17 +29,15 @@ module.exports.post = async (event, context, callback) => {
       Key: key,
     }).promise();
 
-    console.log(fileType(body));
     const { ext, mime } = fileType(body);
-    let encodedMedia;
-    if (mime.startsWith('image/') && ext !== 'gif') {
-      encodedMedia = await encodeImage(body)
-    } else if (mime.startWith('video/')) {
-      // use h265 with ffmpeg
-      // 여기도 해라.
-      // ㄴㄴ 영상은 나중에 하자
-      throw new Error('NOT YET');
+
+    if (['image', 'video'].every(type => !mime.startsWith(type))) {
+      throw new Error(`Cannot encode media ${mime}`);
     }
+
+    const encodedMedia = mime.startsWith('image/') && ext !== 'gif'
+      ? await encodeImage(body)
+      : await encodeVideo(body);
 
     const encodedMediaMime = fileType(encodedMedia).mime;
 
@@ -48,7 +47,6 @@ module.exports.post = async (event, context, callback) => {
       Body: encodedMedia,
       ContentType: encodedMediaMime,
     }).promise();
-
 
     const response = {
       statusCode: 200,
