@@ -50,7 +50,7 @@ export default class Edit extends Vue {
     imageFileInput: HTMLInputElement;
   };
 
-  textReplaceMap: {[text: string]: string} = {};
+  elementReplaceMap: { source: HTMLElement, dest: HTMLElement }[] = [];
   compressingJobs: Promise<any>[] = [];
 
   back() {
@@ -58,7 +58,10 @@ export default class Edit extends Vue {
   }
   async save() {
     await Promise.all(this.compressingJobs);
-    const content = this.replaceAll(this.$refs.editor.innerHTML);
+
+    this.replaceMediaIntoUploadAll();
+    const content = this.$refs.editor.innerHTML;
+
     try {
       await savePost(this.extensionAuth.token, content);
       this.changePage("ViewPage");
@@ -94,20 +97,46 @@ export default class Edit extends Vue {
     const file = files[0];
     const tempUrl = URL.createObjectURL(file);
 
-    const iamgeMaxWidth = this.PAGE_WIDTH - (2 * this.IMAGE_MARGIN);
+    const tempMediaElement = this.createMediaElement(tempUrl, file.type);
 
     const compressingJob = uploadMedia(this.extensionAuth.token, file);
     this.compressingJobs.push(compressingJob);
+
     compressingJob.then(({ url, mime }) => {
-      // TODO url settings or change media tag by mime
-      this.textReplaceMap[tempUrl] = url;
+      const uploadedMediaElement = this.createMediaElement(url, mime);
+
+      this.elementReplaceMap.push({
+        source: tempMediaElement,
+        dest: uploadedMediaElement,
+      });
     });
 
-    const imageTag = document.createElement('img');
-    imageTag.src = tempUrl;
-    imageTag.className = 'uploaded-image';
+    this.addHtmlElement(tempMediaElement);
+  }
+  createMediaElement(src, mime): HTMLElement {
+    if (['image', 'video'].every((type) => !mime.startsWith(type))) {
+      alert(`잘못된 파일 형식입니다(${mime}).`);
+      throw new Error('uplload only image or video file please');
+    }
+    const mediaElement = mime.startsWith('image')
+        ? this.createImageElement(src)
+        : this.createVideoElement(src);
 
-    this.addHtmlElement(imageTag);
+    return mediaElement;
+  }
+  createVideoElement(src): HTMLElement {
+    const videoElement = document.createElement('video');
+    videoElement.src = src;
+    videoElement.loop = true;
+    videoElement.autoplay = true;
+    videoElement.className = 'uploaded-video';
+    return videoElement;
+  }
+  createImageElement(src): HTMLElement {
+    const imageElement = document.createElement('img');
+    imageElement.src = src;
+    imageElement.className = 'uploaded-image';
+    return imageElement;
   }
   addHtmlElement(element: HTMLElement) {
     this.$refs.editor.focus();
@@ -120,10 +149,14 @@ export default class Edit extends Vue {
 
     this.$refs.editor.focus();
   }
-  replaceAll(content: string): string {
-    return Object.entries(this.textReplaceMap).reduce((prev, [sourceText, destText]) => {
-      return prev.replace(sourceText, destText);
-    }, content);
+  replaceMediaIntoUploadAll() {
+    this.elementReplaceMap.forEach(({ source, dest }) => {
+      const { parentNode } =  source;
+      if (!parentNode) {
+        throw new Error(`no parent Node for ${source.innerHTML}`);
+      }
+      parentNode.replaceChild(dest, source);
+    });
   }
 }
 </script>
@@ -159,6 +192,11 @@ export default class Edit extends Vue {
   pointer-events: none;
 }
 .uploaded-image {
+  display: block;
+  max-width: calc(100% - 20px);
+  margin: 10px;
+}
+.uploaded-video {
   display: block;
   max-width: calc(100% - 20px);
   margin: 10px;
