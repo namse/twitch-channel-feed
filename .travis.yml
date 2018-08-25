@@ -4,6 +4,6 @@ node_js:
 jobs:
   include:
     - stage: "Deploy Server"
-      before_script: cd server
-      script: npm install
+      before_install: cd server
+      install: npm install
       script: npm run deploy -- --stage $TRAVIS_BRANCH
