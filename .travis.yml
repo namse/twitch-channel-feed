@@ -9,7 +9,7 @@ jobs:
         - cd server
       install: npm install
       script: npm run deploy -- --stage $TRAVIS_BRANCH
-  - stage: "Deploy Client to S3"
+    - stage: "Deploy Client to S3"
       before_install:
         - ./checkdiff.sh client/*
         - cd client
