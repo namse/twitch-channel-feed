@@ -16,7 +16,7 @@
     "serverless": "^1.29.2"
   },
   "scripts": {
-    "deploy": "serverless deploy -v",
+    "deploy": "serverless deploy -v --conceal",
     "deploy-function": "serverless deploy function -f",
     "log": "serverless logs -t -f"
   },
