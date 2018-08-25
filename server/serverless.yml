@@ -23,7 +23,6 @@ provider:
   environment:
     TWITCH_EXTENSION_SECRET_KEY: "${env:TWITCH_EXTENSION_SECRET_KEY}"
 
-
 functions:
   feed:
     handler: feed.post
