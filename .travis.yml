@@ -7,6 +7,3 @@ jobs:
       before_install: cd server
       install: npm install
       script: npm run deploy -- --stage $TRAVIS_BRANCH
-env:
-  global:
-    secure: FSGKD/n8PItjQAQim0CUIzkqBRaB5FJqXpn0zMVolfjvtQc7G+mfXYK1Zq0GSioDzux2oPaCzfi6sr2OunzKDo8G8OulJYvoe43IFD8PvFKPzjKlenGmy2jRxA9w2ZC0EtE4guweETuppzwW+bPZ41QXDnhOUJoqwzWvAOKl8B2+e4dB1H4KitfWMv0XCST1KtPNXYtOPBfLoepqwjgbiwrQAcMiMBPBbJ/IRueg/x0VruJZtNDi6aJ/cNFHEOxnfsW1V0r5fGHbVPQCcaSJTj9XZ9zAjwYrJjvST/7W9GgSeWC5gYIph73CJR0N5VyoDmAlFgFUtFBYyOd3bc+jfjom+BMGMrFgbhA9mD76x/+EIC1s4BNfrYnGFljFBiUMxf2BzsnUoQkOzT9tVZIyxWOgjCUM/IXcgTlwqemBImySWMrouDUmBkh8MBF+AfqpldPTplzcUdYodJw2vK2KvDDIX+sBfo8/G/ww4ETBGQd7NJaLu9ZH0tsx1zWfJQlbRA8igeL/bMewChqyH/o9LZz7XamNyVl8u9gX4/pKTGeBzqMxXTLjnCES8tC412gXjCBo5JcstC26robevUZPCLsHvsGUiZyoXsZT0moTiBqNg5wZ5sZFYIZescISmH6/kmdZLuXOucCss+CMmeYbAA3sWZqZigWgBbq6mgcWR20=
