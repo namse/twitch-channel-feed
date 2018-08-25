@@ -15,4 +15,13 @@ jobs:
         - cd client
       install: npm install
       script: API_GATEWAY_STAGE=$TRAVIS_BRANCH npm run build
+      deploy:
+        provider: s3
+        access_key_id: $AWS_ACCESS_KEY_ID
+        secret_access_key: $AWS_SECRET_ACCESS_KEY
+        bucket: twitch-channel-feed-client-build
+        region: ap-northeast-2
+        skip_cleanup: true
+        local_dir: client/dist
+        upload-dir: $TRAVIS_BRANCH
 
