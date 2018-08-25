@@ -22,8 +22,6 @@ provider:
 # you can define service wide environment variables here
   environment:
     TWITCH_EXTENSION_SECRET_KEY: "${self:custom.TWITCH_EXTENSION_SECRET_KEY}"
-    PACKAGE_BUCKET_ARN:
-      "Fn::GetAtt": [ packageBucket, Arn ]
 
 # you can add packaging information here
 package:
@@ -79,15 +77,3 @@ custom:
       - Access-Control-Allow-Headers
       - Access-Control-Allow-Origin
       - Access-Control-Allow-Methods
-
-resources:
-  Resources:
-    packageBucket:
-      Type: AWS::S3::Bucket
-  Outputs:
-    PackageBucketArn:
-      Description: The ARN for the package bucket
-      Value:
-        "Fn::GetAtt": [ packageBucket, Arn ]
-      Export:
-        Name: PackageBucketeArn
