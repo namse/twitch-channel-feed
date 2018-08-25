@@ -1,6 +1,23 @@
 const EMOTES_INFO_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes';
 const EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes-available-to-user';
-const BACKEND_ENDPOINT = 'https://4nyg9ttt53.execute-api.ap-northeast-2.amazonaws.com/dev';
+
+// TODO : change this after getting domain
+let BACKEND_ENDPOINT;
+const BACKEND_ENDPOINT_JSON_URL = 'https://s3.ap-northeast-2.amazonaws.com/twitch-channel-feed-api-endpoint/endpoints.json';
+async function getBackendEndpoint() {
+  const stage = process.env.API_GATEWAY_STAGE;
+  if (!stage) {
+    throw new Error('No API GATEWAY STAGE');
+  }
+
+  if (BACKEND_ENDPOINT) {
+    return BACKEND_ENDPOINT;
+  }
+  const response = await fetch(BACKEND_ENDPOINT_JSON_URL);
+  const json = await response.json();
+  BACKEND_ENDPOINT = json[stage];
+  return BACKEND_ENDPOINT;
+}
 
 export async function check2xx(response: Response) {
   if (response.status >= 200 || response.status < 300) {
@@ -18,7 +35,7 @@ export async function getEmotesinfo(emoteSetId: string): Promise<Emote[]> {
 
 export async function savePost(token: string, content: string) {
   const response = await fetch(
-    `${BACKEND_ENDPOINT}/feed`,
+    `${await getBackendEndpoint()}/feed`,
     {
       method: 'POST',
       headers: {
@@ -35,7 +52,7 @@ export async function savePost(token: string, content: string) {
 
 export async function saveEmotes(token: string, userId: string, emotes: EmotesMap) {
   const response = await fetch(
-    `${BACKEND_ENDPOINT}/emote`,
+    `${await getBackendEndpoint()}/emote`,
     {
       method: 'POST',
       headers: {
@@ -63,7 +80,7 @@ export type PreSignedUrlResponse = {
 };
 
 export async function getPreSignedUrl(token: string): Promise<PreSignedUrlResponse> {
-  const response = await fetch(`${BACKEND_ENDPOINT}/media/preSignedUrl`, {
+  const response = await fetch(`${await getBackendEndpoint()}/media/preSignedUrl`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -78,7 +95,7 @@ export type EncodeMediaResponse = {
 };
 
 export async function encodeMedia(token: string, mediaId: string): Promise<EncodeMediaResponse> {
-  const response = await fetch(`${BACKEND_ENDPOINT}/media/${mediaId}/encode`, {
+  const response = await fetch(`${await getBackendEndpoint()}/media/${mediaId}/encode`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
