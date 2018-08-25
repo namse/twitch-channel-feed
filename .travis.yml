@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  - "8.10"
+jobs:
+  include:
+    - stage: "[server] npm install"
+      before_script: cd server
+      script: npm install
+    - stage: "[server] deploy"
+      before_script: cd server
+      script: npm run deploy --stage $TRAVIS_BRANCH
