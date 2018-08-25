@@ -13,7 +13,8 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "serverless": "^1.29.2"
+    "serverless": "^1.29.2",
+    "serverless-domain-manager": "^2.6.0"
   },
   "scripts": {
     "deploy": "serverless deploy -v --conceal",

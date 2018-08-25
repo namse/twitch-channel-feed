@@ -23,13 +23,6 @@ provider:
   environment:
     TWITCH_EXTENSION_SECRET_KEY: "${env:TWITCH_EXTENSION_SECRET_KEY}"
 
-plugins:
-  - serverless-domain-manager
-
-# you can add packaging information here
-package:
- exclude:
-   - secrets.yml
 
 functions:
   feed:
@@ -65,6 +58,10 @@ functions:
             parameters:
               paths:
                 mediaId: true
+
+plugins:
+  - serverless-domain-manager
+
 custom:
   cors:
     origins:
