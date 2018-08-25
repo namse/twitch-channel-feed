@@ -4,11 +4,15 @@ node_js:
 jobs:
   include:
     - stage: "Deploy Server"
-      before_install: cd server
+      before_install:
+        - ./checkdiff.sh server/*
+        - cd server
       install: npm install
       script: npm run deploy -- --stage $TRAVIS_BRANCH
   - stage: "Deploy Client to S3"
-      before_install: cd client
+      before_install:
+        - ./checkdiff.sh client/*
+        - cd client
       install: npm install
       script: API_GATEWAY_STAGE=$TRAVIS_BRANCH npm run build
 
