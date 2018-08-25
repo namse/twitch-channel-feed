@@ -13,7 +13,6 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
-    "lambda-packager": "^0.2.1",
     "serverless": "^1.29.2"
   },
   "scripts": {
