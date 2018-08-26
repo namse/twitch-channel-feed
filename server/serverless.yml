@@ -77,6 +77,6 @@ custom:
       - Access-Control-Allow-Methods
   customDomain:
     domainName: api.twitchchannelfeed.com
-    stage: ${env:TRAVIS_BRANCH}
-    basePath: ${env:TRAVIS_BRANCH}
+    stage: ${env:STAGE}
+    basePath: ${env:STAGE}
     certificateName: '*.twitchchannelfeed.com'

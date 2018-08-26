@@ -9,7 +9,7 @@ jobs:
         - cd server
       install: npm install
       script:
-      - STAGE="$( echo $TRAVIS_BRANCH | tr '/|.' '-' )"
+      - export STAGE="$( echo $TRAVIS_BRANCH | tr '/|.' '-' )"
       - npm run deploy -- --stage $STAGE
     - stage: "Deploy Client to S3"
       before_install:
@@ -17,7 +17,8 @@ jobs:
         - cd client
       install: npm install
       before_script:
-        - echo VUE_APP_API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
+        - export STAGE="$( echo $TRAVIS_BRANCH | tr '/|.' '-' )"
+        - echo VUE_APP_API_GATEWAY_STAGE=$BRANCH > .env
         - cat .env
       script:
         - npm run build
