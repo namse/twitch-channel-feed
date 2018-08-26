@@ -24,4 +24,6 @@ jobs:
         skip_cleanup: true
         local_dir: client/dist
         upload-dir: $TRAVIS_BRANCH
+        on:
+          all_branches: true
 
