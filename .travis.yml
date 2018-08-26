@@ -9,7 +9,7 @@ jobs:
         - cd server
       install: npm install
       script:
-      - STAGE="$( echo $TRAVIS_BRANCH | tr '/' '-' )"
+      - STAGE="$( echo $TRAVIS_BRANCH | tr '/|.' '-' )"
       - npm run deploy -- --stage $STAGE
     - stage: "Deploy Client to S3"
       before_install:
