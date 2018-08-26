@@ -18,6 +18,9 @@ jobs:
         - echo VUE_APP_API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
         - cat .env
       script: npm run build
+      after_script:
+        - mkdir build
+        - zip -r build/"$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip dist/*
       deploy:
         provider: s3
         access_key_id: $AWS_ACCESS_KEY_ID
@@ -25,7 +28,7 @@ jobs:
         bucket: twitch-channel-feed-client-build
         region: ap-northeast-2
         skip_cleanup: true
-        local_dir: dist
+        local_dir: build
         upload-dir: $TRAVIS_BRANCH
         on:
           all_branches: true
