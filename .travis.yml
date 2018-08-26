@@ -22,7 +22,7 @@ jobs:
         bucket: twitch-channel-feed-client-build
         region: ap-northeast-2
         skip_cleanup: true
-        local_dir: client/dist
+        local_dir: dist
         upload-dir: $TRAVIS_BRANCH
         on:
           all_branches: true
