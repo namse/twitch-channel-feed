@@ -1,7 +1,7 @@
 const EMOTES_INFO_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes';
 const EMOTES_AVAILABLE_S3_BUCKET_ENDPOINT = 'https://s3.ap-northeast-2.amazonaws.com/twitch-emotes-available-to-user';
 
-if (!process.env.API_GATEWAY_STAGE) {
+if (!process.env.VUE_APP_API_GATEWAY_STAGE) {
   console.log(`api gateway stage not setup`);
 }
 const apiGatewayStage = process.env.VUE_APP_API_GATEWAY_STAGE || 'develop';
