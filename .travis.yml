@@ -17,8 +17,8 @@ jobs:
       before_script:
         - echo VUE_APP_API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
         - cat .env
-      script: npm run build
-      after_script:
+      script:
+        - npm run build
         - mkdir build
         - zip -r build/"$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip dist/*
       deploy:
