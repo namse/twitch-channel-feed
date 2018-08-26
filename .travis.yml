@@ -15,7 +15,7 @@ jobs:
         - cd client
       install: npm install
       before_script:
-        - echo API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
+        - echo VUE_APP_API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
         - cat .env
       script: npm run build
       deploy:
