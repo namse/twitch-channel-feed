@@ -14,7 +14,8 @@ jobs:
         # - ./checkdiff.sh client/*
         - cd client
       install: npm install
-      script: API_GATEWAY_STAGE=$TRAVIS_BRANCH npm run build
+      before_script: echo API_GATEWAY_STAGE=$TRAVIS_BRANCH > .env
+      script: npm run build
       deploy:
         provider: s3
         access_key_id: $AWS_ACCESS_KEY_ID
