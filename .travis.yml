@@ -20,7 +20,9 @@ jobs:
       script:
         - npm run build
         - mkdir build
-        - zip -r build/"$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip dist/*
+        - cd build
+        - zip -r "$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip ./*
+        - cd ..
       deploy:
         provider: s3
         access_key_id: $AWS_ACCESS_KEY_ID
