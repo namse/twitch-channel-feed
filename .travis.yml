@@ -20,8 +20,8 @@ jobs:
       script:
         - npm run build
         - mkdir build
-        - cd build
-        - zip -r "$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip -i ./*
+        - cd dist
+        - zip -r ../build/"$TRAVIS_BRANCH"_"$(date +%Y-%m-%d)"_"$TRAVIS_BUILD_NUMBER".zip *
         - cd ..
       deploy:
         provider: s3
