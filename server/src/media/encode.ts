@@ -1,20 +1,22 @@
 import AWS = require('aws-sdk');
-const fileType = require('file-type');
-const authExtTokenHeader = require('../authExtTokenHeader');
-const encodeImage = require('./encodeImage');
-const encodeVideo = require('./encodeVideo');
+import fileType from 'file-type';
+import encodeImage from './encodeImage';
+import encodeVideo from './encodeVideo';
+import extractToken from '../auth/extractToken';
+import authenticateExtensionToken from '../auth/authenticateExtensionToken';
 
 const s3 = new AWS.S3();
 
 const S3_BUCKET_BEFORE_ENCODE = 'twitch-channel-feed-media-before-encode';
 const S3_BUCKET_AFTER_ENCODE = 'twitch-channel-feed-media-after-encode';
 
-module.exports.post = async (event: any, _: any, callback: (error: Error, result: any) => void) => {
+export default async function post(event: any, _: any, callback: (error: Error, result: any) => void) {
   try {
     const {
       mediaId,
     } = event.pathParameters;
-    const decoded = await authExtTokenHeader(event.headers);
+    const token = extractToken(event.headers);
+    const decoded = await authenticateExtensionToken(token);
     const {
       role,
       user_id: userId,

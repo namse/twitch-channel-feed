@@ -28,7 +28,7 @@
     "deploy": "serverless deploy -v --conceal",
     "deploy-function": "serverless deploy function -f",
     "log": "serverless logs -t -f",
-    "start": "tsc -w",
+    "start": "tsc -w --noEmit",
     "build": "tsc"
   },
   "author": "",
