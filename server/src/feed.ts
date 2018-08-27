@@ -54,7 +54,7 @@ function divideColdData(recent: Recent, userId: string) {
   };
 }
 
-export async function post(event: any, callback: (error: Error, result: any) => void) {
+export async function post(event: any, _: any, callback: (error: Error, result: any) => void) {
   try {
     const body = JSON.parse(event.body);
     const {

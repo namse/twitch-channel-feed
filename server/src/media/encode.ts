@@ -9,7 +9,7 @@ const s3 = new AWS.S3();
 const S3_BUCKET_BEFORE_ENCODE = 'twitch-channel-feed-media-before-encode';
 const S3_BUCKET_AFTER_ENCODE = 'twitch-channel-feed-media-after-encode';
 
-module.exports.post = async (event: any, context: any, callback: (error: Error, result: any) => void) => {
+module.exports.post = async (event: any, _: any, callback: (error: Error, result: any) => void) => {
   try {
     const {
       mediaId,

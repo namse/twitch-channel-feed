@@ -5,7 +5,7 @@ import authenticateIdToken from './auth/authenticateIdToken';
 const s3 = new AWS.S3();
 const TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET = 'twitch-emotes-available-to-user';
 
-export async function post(event: any, context: any, callback: (error: Error, result: any) => void) {
+export async function post(event: any, _: any, callback: (error: Error, result: any) => void) {
   try {
     const body = JSON.parse(event.body);
     const {

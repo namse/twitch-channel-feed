@@ -8,7 +8,7 @@ const s3 = new AWS.S3({
 });
 const MB = 1024 * 1024;
 
-module.exports.get = async (event: any, context: any, callback: (error: Error, result: any) => void) => {
+module.exports.get = async (event: any, _: any, callback: (error: Error, result: any) => void) => {
   try {
     const token = extractToken(event.headers);
     const decoded = await authenticateExtensionToken(token);
