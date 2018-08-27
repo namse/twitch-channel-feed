@@ -24,8 +24,8 @@ async function fetchOrNewRecent(recentKey) {
   }
 }
 
-function divideColdData(recent) {
-  if (recnet.feeds.length < 2 * COLD_DATA_LENGTH) {
+function divideColdData(recent, userId) {
+  if (recent.feeds.length < 2 * COLD_DATA_LENGTH) {
     return {
       newRecent: recent,
       coldData: null,
@@ -33,13 +33,13 @@ function divideColdData(recent) {
   }
 
   const coldData = {
-    feeds: recent.slice(recent.feeds.length - COLD_DATA_LENGTH),
+    feeds: recent.feeds.slice(recent.feeds.length - COLD_DATA_LENGTH),
     nextData: recent.nextData,
-    key: `${uuid()}.json`,
+    key: `${userId}/${uuid()}.json`,
   };
   const newRecent = {
     feeds: recent.feeds.slice(0, recent.feeds.length - COLD_DATA_LENGTH),
-    nextData: coldData.id,
+    nextData: coldData.key,
   };
 
   return {
@@ -74,8 +74,8 @@ module.exports.post = async (event, context, callback) => {
     }
     const recentKey = `${userId}/recent.json`;
 
-    const recent = fetchOrNewRecent(recentKey);
-
+    const recent = await fetchOrNewRecent(recentKey);
+    
     const {
       feeds,
     } = recent;
@@ -84,19 +84,20 @@ module.exports.post = async (event, context, callback) => {
       content,
     });
 
-    const { newRecent, coldData } = divideColdData(recent);
-
+    const { newRecent, coldData } = divideColdData(recent, userId);
     await s3.putObject({
       Bucket: bucketName,
       Key: recentKey,
       Body: JSON.stringify(newRecent),
     }).promise();
 
-    await s3.putObject({
-      Bucket: bucketName,
-      Key: coldData.key,
-      Body: JSON.stringify(coldData),
-    }).promise();
+    if (coldData) {
+      await s3.putObject({
+        Bucket: bucketName,
+        Key: coldData.key,
+        Body: JSON.stringify(coldData),
+      }).promise();
+    }
 
     const response = {
       statusCode: 200,
