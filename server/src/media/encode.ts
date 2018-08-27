@@ -1,4 +1,4 @@
-const AWS = require('aws-sdk');
+import AWS = require('aws-sdk');
 const fileType = require('file-type');
 const authExtTokenHeader = require('../authExtTokenHeader');
 const encodeImage = require('./encodeImage');
@@ -9,7 +9,7 @@ const s3 = new AWS.S3();
 const S3_BUCKET_BEFORE_ENCODE = 'twitch-channel-feed-media-before-encode';
 const S3_BUCKET_AFTER_ENCODE = 'twitch-channel-feed-media-after-encode';
 
-module.exports.post = async (event, context, callback) => {
+module.exports.post = async (event: any, context: any, callback: (error: Error, result: any) => void) => {
   try {
     const {
       mediaId,
@@ -31,7 +31,7 @@ module.exports.post = async (event, context, callback) => {
 
     const { ext, mime } = fileType(body);
 
-    if (['image', 'video'].every(type => !mime.startsWith(type))) {
+    if (['image', 'video'].every((type) => !mime.startsWith(type))) {
       throw new Error(`Cannot encode media ${mime}`);
     }
 
@@ -40,19 +40,19 @@ module.exports.post = async (event, context, callback) => {
       : await encodeVideo(body);
     console.log('after encode');
     const encodedMediaMime = fileType(encodedMedia).mime;
-    
+
     await s3.putObject({
       Bucket: S3_BUCKET_AFTER_ENCODE,
       Key: key,
       Body: encodedMedia,
       ContentType: encodedMediaMime,
     }).promise();
-    
+
     const response = {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         url: `https://${S3_BUCKET_AFTER_ENCODE}.s3.amazonaws.com/${key}`,
@@ -65,8 +65,8 @@ module.exports.post = async (event, context, callback) => {
     const response = {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify(err, Object.getOwnPropertyNames(err)),
     };

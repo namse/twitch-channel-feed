@@ -25,28 +25,28 @@ provider:
 
 functions:
   feed:
-    handler: feed.post
+    handler: src/feed.post
     events:
       - http:
           path: feed
           method: post
           cors: ${self:custom.cors}
   emote:
-    handler: emote.post
+    handler: src/emote.post
     events:
       - http:
           path: emote
           method: post
           cors: ${self:custom.cors}
   getPresignedUrl:
-    handler: media/preSignedUrl.get
+    handler: src/media/preSignedUrl.get
     events:
       - http:
           path: media/preSignedUrl
           method: get
           cors: ${self:custom.cors}
   encode:
-    handler: media/encode.post
+    handler: src/media/encode.post
     timeout: 10
     events:
       - http:
@@ -60,6 +60,7 @@ functions:
 
 plugins:
   - serverless-domain-manager
+  - serverless-plugin-typescript
 
 custom:
   cors:

@@ -13,15 +13,23 @@
     "uuid": "^3.3.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^7.2.8",
+    "@types/node": "^10.9.2",
+    "@types/uuid": "^3.4.3",
     "babel-eslint": "^8.2.6",
     "eslint": "^5.4.0",
     "serverless": "^1.29.2",
-    "serverless-domain-manager": "^2.6.0"
+    "serverless-domain-manager": "^2.6.0",
+    "serverless-plugin-typescript": "^1.1.5",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
   },
   "scripts": {
     "deploy": "serverless deploy -v --conceal",
     "deploy-function": "serverless deploy function -f",
-    "log": "serverless logs -t -f"
+    "log": "serverless logs -t -f",
+    "start": "tsc -w",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC"

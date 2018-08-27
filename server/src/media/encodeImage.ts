@@ -1,6 +1,6 @@
-const sharp = require('sharp');
-const imagemin = require('imagemin');
-const imageminWebp = require('imagemin-webp');
+import sharp from 'sharp';
+import imagemin from 'imagemin';
+import imageminWebp from 'imagemin-webp';
 
 const MAX_WIDTH = 300;
 
@@ -19,7 +19,7 @@ async function resizeImage(buffer) {
   return resizedBuffer;
 }
 
-module.exports = async function encodeImage(buffer) {
+export default async function encodeImage(buffer) {
   const resizedBuffer = await resizeImage(buffer);
 
   const resultBuffer = await imagemin.buffer(resizedBuffer, {
@@ -29,4 +29,4 @@ module.exports = async function encodeImage(buffer) {
   });
 
   return resultBuffer;
-}
+};

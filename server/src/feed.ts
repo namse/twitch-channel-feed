@@ -1,18 +1,25 @@
-const AWS = require('aws-sdk');
-const authExtTokenHeader = require('./authExtTokenHeader');
-const uuid = require('uuid/v4');
+import AWS = require('aws-sdk');
+import uuid from 'uuid/v4';
+import extractToken from './auth/extractToken';
+import authenticateExtensionToken from './auth/authenticateExtensionToken';
 
 const s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
 const COLD_DATA_LENGTH = 3;
 
-async function fetchOrNewRecent(recentKey) {
+type Recent = {
+  feeds: string[];
+  nextData?: string;
+  coldData: string;
+}
+
+async function fetchOrNewRecent(recentKey: string) {
   try {
     const data = await s3.getObject({
       Bucket: bucketName,
       Key: recentKey,
     }).promise();
-    return JSON.parse(data.Body);
+    return JSON.parse(data.Body as string);
   } catch (err) {
     if (err.code !== 'NoSuchKey') {
       throw err;
@@ -24,11 +31,10 @@ async function fetchOrNewRecent(recentKey) {
   }
 }
 
-function divideColdData(recent, userId) {
+function divideColdData(recent: Recent, userId: string) {
   if (recent.feeds.length < 2 * COLD_DATA_LENGTH) {
     return {
       newRecent: recent,
-      coldData: null,
     };
   }
 
@@ -48,7 +54,7 @@ function divideColdData(recent, userId) {
   };
 }
 
-module.exports.post = async (event, context, callback) => {
+export async function post(event: any, callback: (error: Error, result: any) => void) {
   try {
     const body = JSON.parse(event.body);
     const {
@@ -64,7 +70,8 @@ module.exports.post = async (event, context, callback) => {
       throw new Error(`Too big content: ${content.length}`);
     }
 
-    const decoded = await authExtTokenHeader(event.headers);
+    const token = extractToken(event.headers);
+    const decoded = await authenticateExtensionToken(token);
     const {
       role,
       user_id: userId,
@@ -75,7 +82,7 @@ module.exports.post = async (event, context, callback) => {
     const recentKey = `${userId}/recent.json`;
 
     const recent = await fetchOrNewRecent(recentKey);
-    
+
     const {
       feeds,
     } = recent;
@@ -102,8 +109,8 @@ module.exports.post = async (event, context, callback) => {
     const response = {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         message: 'Successfully posted',
@@ -112,13 +119,12 @@ module.exports.post = async (event, context, callback) => {
     };
 
     callback(null, response);
-  }
-  catch (err) {
+  } catch (err) {
     const response = {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify(err, Object.getOwnPropertyNames(err)),
     };

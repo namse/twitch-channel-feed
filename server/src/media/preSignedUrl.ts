@@ -1,15 +1,17 @@
-const AWS = require('aws-sdk');
-const uuid = require('uuid/v4');
-const authExtTokenHeader = require('../authExtTokenHeader');
+import AWS = require('aws-sdk');
+import uuid from 'uuid/v4';
+import extractToken from '../auth/extractToken';
+import authenticateExtensionToken from '../auth/authenticateExtensionToken';
 
 const s3 = new AWS.S3({
   region: 'ap-northeast-2',
 });
 const MB = 1024 * 1024;
 
-module.exports.get = async (event, context, callback) => {
+module.exports.get = async (event: any, context: any, callback: (error: Error, result: any) => void) => {
   try {
-    const decoded = await authExtTokenHeader(event.headers);
+    const token = extractToken(event.headers);
+    const decoded = await authenticateExtensionToken(token);
     const {
       role,
       user_id: userId,
@@ -24,14 +26,14 @@ module.exports.get = async (event, context, callback) => {
     const params = {
       Bucket: 'twitch-channel-feed-media-before-encode',
       Conditions: [
-        ["content-length-range", 0, 40 * MB],
+        ['content-length-range', 0, 40 * MB],
         {
           key,
         },
       ],
     };
 
-    const data = await new Promise((resolve, reject) => {
+    const data = await new Promise<AWS.S3.PresignedPost>((resolve, reject) => {
       s3.createPresignedPost(params, (err, data) => {
         if (err) {
           return reject(err);
@@ -48,8 +50,8 @@ module.exports.get = async (event, context, callback) => {
     const response = {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         url,
@@ -63,8 +65,8 @@ module.exports.get = async (event, context, callback) => {
     const response = {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify(err, Object.getOwnPropertyNames(err)),
     };

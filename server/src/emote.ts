@@ -1,17 +1,19 @@
-const AWS = require('aws-sdk');
-const authExtTokenHeader = require('./authExtTokenHeader');
+import AWS = require('aws-sdk');
+import extractToken from './auth/extractToken';
+import authenticateIdToken from './auth/authenticateIdToken';
 
 const s3 = new AWS.S3();
 const TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET = 'twitch-emotes-available-to-user';
 
-module.exports.post = async (event, context, callback) => {
+export async function post(event: any, context: any, callback: (error: Error, result: any) => void) {
   try {
     const body = JSON.parse(event.body);
     const {
       userId,
       emotesMap,
     } = body;
-    const decoded = await authExtTokenHeader(event.headers);
+    const token = extractToken(event.headers);
+    const decoded = await authenticateIdToken(token);
     const {
       sub,
     } = decoded;
@@ -28,8 +30,8 @@ module.exports.post = async (event, context, callback) => {
     const response = {
       statusCode: 200,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify({
         message: 'Successfully saved',
@@ -37,13 +39,12 @@ module.exports.post = async (event, context, callback) => {
     };
 
     callback(null, response);
-  }
-  catch (err) {
+  } catch (err) {
     const response = {
       statusCode: 500,
       headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Credentials": true,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
       },
       body: JSON.stringify(err, Object.getOwnPropertyNames(err)),
     };
