@@ -6,7 +6,7 @@ const s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
 const COLD_DATA_LENGTH = 3;
 
-function fetchOrNewRecent(recentKey) {
+async function fetchOrNewRecent(recentKey) {
   try {
     const data = await s3.getObject({
       Bucket: bucketName,
