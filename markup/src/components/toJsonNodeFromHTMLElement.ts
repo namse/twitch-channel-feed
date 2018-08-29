@@ -1,4 +1,4 @@
-import { JsonNode, TextJsonNode, ElementJsonNode } from '@/components/JsonNode';
+import { JsonNode, TextJsonNode, ElementJsonNode } from './JsonNode';
 
 export default function toJsonNodeFromHTMLElement(node: Node): JsonNode {
   const jsonNode = convertToJsonNode(node);
@@ -40,7 +40,7 @@ function runRecursively(node: Node, func: (node: Node) => void) {
 
 
 function mapChildrenNodes<T>(node: Node, func: (node: Node) => T): T[] {
-  const ret = [];
+  const ret: T[] = [];
   for (let i = 0; i < node.childNodes.length; i += 1) {
     const child = node.childNodes[i];
     const result = func(child);

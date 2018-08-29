@@ -1,4 +1,4 @@
-import { JsonNode, TextJsonNode, ElementJsonNode } from '@/components/JsonNode';
+import { JsonNode, TextJsonNode, ElementJsonNode } from './JsonNode';
 
 export default function toJsonNodeFromString(value: string): JsonNode {
   const parsed = JSON.parse(value);

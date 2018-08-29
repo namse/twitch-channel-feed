@@ -28,6 +28,7 @@ import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
 // import compressImage from '../utils/compressImage';
 import uploadMedia from '../utils/uploadMedia';
+import toJsonNodeFromHTMLElement from "../../../markup/src/components/toJsonNodeFromHTMLElement";
 
 declare var Twitch: any;
 
@@ -60,7 +61,9 @@ export default class Edit extends Vue {
     await Promise.all(this.compressingJobs);
 
     this.replaceMediaIntoUploadAll();
-    const content = this.$refs.editor.innerHTML;
+
+    const jsonNode = toJsonNodeFromHTMLElement(this.$refs.editor);
+    const content = JSON.stringify(jsonNode);
 
     try {
       await savePost(this.extensionAuth.token, content);
