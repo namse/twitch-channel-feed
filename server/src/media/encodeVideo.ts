@@ -2,7 +2,7 @@ import util from 'util';
 import uuid from 'uuid/v4';
 import fs from 'fs';
 import path from 'path';
-import exec from './exec';
+const exec = require('child_process').exec;
 
 const writeFileAsync = util.promisify(fs.writeFile);
 const readFileAsync = util.promisify(fs.readFile);
