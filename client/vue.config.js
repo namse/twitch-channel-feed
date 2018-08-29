@@ -5,4 +5,9 @@ module.exports = {
     https: true,
   },
   baseUrl: '',
+  configureWebpack: {
+    optimization: {
+      minimize: false,
+    },
+  },
 };

@@ -24,7 +24,7 @@ export default class App extends Vue {
   @State("currentPage") currentPage!: string;
 
   created() {
-    if (process.env.NODE_ENV != 'production') {
+    if (process.env.NODE_ENV !== 'production') {
       console.log(process.env.NODE_ENV);
     }
     Twitch.ext.onAuthorized(auth => {

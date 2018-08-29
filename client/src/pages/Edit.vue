@@ -67,7 +67,6 @@ export default class Edit extends Vue {
       this.changePage("ViewPage");
     } catch(err) {
       alert(`다음과 같은 이유로 글을 저장하지 못하였습니다. - ${err}`);
-      console.error(err);
     }
   }
   openEmoteSyncPage() {
