@@ -9,7 +9,7 @@ const readFileAsync = util.promisify(fs.readFile);
 const execAsync = util.promisify(exec);
 
 const tmpDir = '/tmp';
-const binDir = path.join(__dirname, '../bin');
+const binDir = path.join(__dirname, '../../bin');
 const MAX_WIDTH = 300;
 
 export default async function encodeVideo(buffer) {
