@@ -10,6 +10,7 @@ jobs:
         - cd server
       install: npm install
       script:
+      - npx tsc
       - npm run deploy -- --stage $STAGE
     - stage: "Deploy Client to S3"
       before_install:

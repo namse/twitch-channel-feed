@@ -47,6 +47,9 @@ functions:
           cors: ${self:custom.cors}
   encode:
     handler: src/media/encode.post
+    package:
+      include:
+        - bin/ffmpeg
     timeout: 10
     events:
       - http:
@@ -60,7 +63,6 @@ functions:
 
 plugins:
   - serverless-domain-manager
-  - serverless-plugin-typescript
 
 custom:
   cors:
