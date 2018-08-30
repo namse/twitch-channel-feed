@@ -9,8 +9,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import toJsonNodeFromHTMLElement from './toJsonNodeFromHTMLElement';
-import toJsonNodeFromString from './toJsonNodeFromString';
+import toJsonNodeFromHTMLElement from '../../../client/src/JsonNode/toJsonNodeFromHTMLElement';
+import toJsonNodeFromString from '../../../client/src/JsonNode/toJsonNodeFromString';
 
 @Component
 export default class HelloWorld extends Vue {

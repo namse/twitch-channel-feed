@@ -27,7 +27,7 @@ import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
 import uploadMedia from '../utils/uploadMedia';
-import toJsonNodeFromHTMLElement from "../../../markup/src/components/toJsonNodeFromHTMLElement";
+import toJsonNodeFromHTMLElement from "../JsonNode/toJsonNodeFromHTMLElement";
 import { ExtensionAuth } from '../store/twitch';
 
 declare var Twitch: any;
