@@ -63,10 +63,10 @@ export class ElementJsonNode extends JsonNode {
   public toHtmlString(): string {
     const tag = this.tagName.toLowerCase();
     const childrenHtmlString = this.children.map(child => child.toHtmlString()).join('');
-    return `<${tag} ${this.attributeString}>${childrenHtmlString}</${tag}>`;
+    return `<${tag} ${this.attributeString()}>${childrenHtmlString}</${tag}>`;
   }
 
-  public get attributeString(): string {
+  public attributeString(): string {
     return this.classNameHtml ? `class="${this.classNameHtml}"` : '';
   }
 
@@ -92,14 +92,14 @@ export class MediaElementJsonNode extends ElementJsonNode {
     super(nodeType, tagName, className, children);
   }
 
-  public get attributeString(): string {
-    return `${super.attributeString} src="${this.src}"`;
+  public attributeString(): string {
+    return `${super.attributeString()} src="${this.src}"`;
   }
 }
 
 export class VideoElementJsonNode extends MediaElementJsonNode {
-  public get attributeString(): string {
-    return `${super.attributeString} autoplay loop muted src="${this.src}"`;
+  public attributeString(): string {
+    return `${super.attributeString()} autoplay loop muted src="${this.src}"`;
   }
 }
 
