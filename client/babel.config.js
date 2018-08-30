@@ -2,7 +2,11 @@ module.exports = {
   presets: [
     '@vue/app'
   ],
-  plugins: [
-    ['transform-remove-console', { exclude: [] }],
-  ],
+  env: {
+    production: {
+      plugins: [
+        ['transform-remove-console', { exclude: [] }],
+      ],
+    },
+  },
 };

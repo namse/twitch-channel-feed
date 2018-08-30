@@ -2,18 +2,13 @@ import AWS = require('aws-sdk');
 import uuid from 'uuid/v4';
 import extractToken from './auth/extractToken';
 import authenticateExtensionToken from './auth/authenticateExtensionToken';
+import { FeedFile } from '../../types/FeedFile';
 
 const s3 = new AWS.S3();
 const bucketName = 'twitch-channel-feed';
 const COLD_DATA_LENGTH = 3;
 
-type Recent = {
-  feeds: string[];
-  nextData?: string;
-  coldData: string;
-}
-
-async function fetchOrNewRecent(recentKey: string) {
+async function fetchOrNewRecent(recentKey: string): Promise<FeedFile> {
   try {
     const data = await s3.getObject({
       Bucket: bucketName,
@@ -31,7 +26,7 @@ async function fetchOrNewRecent(recentKey: string) {
   }
 }
 
-function divideColdData(recent: Recent, userId: string) {
+function divideColdData(recent: FeedFile, userId: string): { newRecent: FeedFile, coldData?: FeedFile } {
   if (recent.feeds.length < 2 * COLD_DATA_LENGTH) {
     return {
       newRecent: recent,

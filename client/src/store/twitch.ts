@@ -1,4 +1,4 @@
-declare type TwitchUser = {
+export type TwitchUser = {
   _id: string;
   bio: string;
   created_at: Date;
@@ -17,14 +17,14 @@ declare type TwitchUser = {
   updated_at: Date;
 };
 
-declare type EmoticonSets = {
+export type EmoticonSets = {
   [emoteSet: string]: {
     code: string;
     id: number;
   };
 };
 
-declare type ExtensionAuth = {
+export type ExtensionAuth = {
   channelId: string;
   clientId: string;
   token: string;

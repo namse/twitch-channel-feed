@@ -26,9 +26,9 @@ import { State, Action } from "vuex-class";
 import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
-// import compressImage from '../utils/compressImage';
 import uploadMedia from '../utils/uploadMedia';
 import toJsonNodeFromHTMLElement from "../../../markup/src/components/toJsonNodeFromHTMLElement";
+import { ExtensionAuth } from '../store/twitch';
 
 declare var Twitch: any;
 

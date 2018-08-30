@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import uuid from 'uuid/v4';
 import { getUserEmotes, getUser, getProfilePicture, getUsername } from '@/api/twitchApi';
-import { getFeeds } from '@/api/awsApi';
+import { getRecentFeedFile, getFeedFile } from '@/api/awsApi';
 import { getEmotesAvailable } from '@/api/backendApi';
+import { TwitchUser, EmoticonSets, ExtensionAuth } from '@/store/twitch';
+import { Feed, FeedFile } from '../../../types/FeedFile';
 
 Vue.use(Vuex);
 
@@ -27,6 +28,8 @@ interface State {
   currentPage: string;
   isOwner: boolean;
   emotesMap: EmotesMap;
+  currentFeedFile?: FeedFile;
+  userId?: string;
 };
 
 const state: State = {
@@ -39,16 +42,16 @@ const state: State = {
   currentPage: 'ViewPage',
   isOwner: false,
   emotesMap: {},
+  currentFeedFile: undefined,
+  userId: undefined,
 };
 
 export default new Vuex.Store({
   state,
   mutations: {
-    addFeed(state, feed) {
-      state.feeds.push(feed);
-    },
     clearFeed(state) {
       state.feeds = [];
+      state.currentFeedFile = undefined;
     },
     setAccessToken(state, accessToken) {
       state.accessToken = accessToken;
@@ -65,8 +68,9 @@ export default new Vuex.Store({
     setEmoticonSets(state, emoticonSets) {
       state.emoticonSets = emoticonSets;
     },
-    setExtensionAuth(state, extensionAuth) {
+    setExtensionAuth(state, extensionAuth: ExtensionAuth) {
       state.extensionAuth = extensionAuth;
+      state.userId = extensionAuth.channelId;
     },
     setIsOwner(state, isOwner) {
       state.isOwner = isOwner;
@@ -76,18 +80,41 @@ export default new Vuex.Store({
     },
     setEmotesAvailable(state, emotesMap) {
       state.emotesMap = emotesMap;
+    },
+    addFeedFile(state, feedFile: FeedFile) {
+      state.feeds.push(...feedFile.feeds);
+      state.currentFeedFile = feedFile;
+      console.log(feedFile.nextData);
     }
   },
   actions: {
-    async loadFeeds(context, userId) {
+    async loadRecentFeeds(context) {
       const {
+        userId,
       } = context.state;
-      const feeds = await getFeeds(userId);
+      if (!userId) {
+        throw new Error('no userId');
+      }
+      const feedFile = await getRecentFeedFile(userId);
       context.commit('clearFeed');
-
-      feeds.forEach((feed) => {
-        context.commit('addFeed', feed);
-      });
+      context.commit('addFeedFile', feedFile);
+    },
+    async loadNextFeeds(context) {
+      const {
+        currentFeedFile,
+        userId,
+      } = context.state;
+      if (!currentFeedFile) {
+        throw new Error('no currentFeedFile');
+      }
+      if (!currentFeedFile.nextData) {
+        throw new Error('no currentFeedFile.nextData');
+      }
+      if (!userId) {
+        throw new Error('no userId');
+      }
+      const feedFile = await getFeedFile(currentFeedFile.nextData);
+      context.commit('addFeedFile', feedFile);
     },
     async fetchUser(context) {
       const {
@@ -119,7 +146,7 @@ export default new Vuex.Store({
     async saveExtensionAuth(context, auth: ExtensionAuth) {
       context.commit('setExtensionAuth', auth);
 
-      await context.dispatch('loadFeeds', auth.channelId);
+      await context.dispatch('loadRecentFeeds');
 
       context.dispatch('checkWhetherOwner');
       if (context.state.isOwner) {
@@ -143,7 +170,7 @@ export default new Vuex.Store({
     async changePage(context, pageName) {
       context.commit('setCurrentPage', pageName);
       if (pageName === 'ViewPage' && context.state.extensionAuth) {
-        await context.dispatch('loadFeeds', context.state.extensionAuth.channelId);
+        await context.dispatch('loadRecentFeeds');
       }
     },
     async fetchEmotesAvailable(context, userId) {

@@ -11,6 +11,7 @@
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import * as moment from "moment";
 import toJsonNodeFromString from "../../../markup/src/components/toJsonNodeFromString";
+import { Feed } from '../../../types/FeedFile';
 
 @Component
 export default class FeedComponent extends Vue {
