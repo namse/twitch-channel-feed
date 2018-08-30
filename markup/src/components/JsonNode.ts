@@ -30,9 +30,11 @@ export class ElementJsonNode extends JsonNode {
     } = element;
     switch (tagName) {
       case 'IMG':
+        const imageElement = element as HTMLImageElement;
+        return new MediaElementJsonNode(nodeType, tagName, className, imageElement.src, children);
       case 'VIDEO':
-        const mediaElement = element as HTMLImageElement | HTMLVideoElement;
-        return new MediaElementJsonNode(nodeType, tagName, className, mediaElement.src, children);
+        const videoElement = element as HTMLVideoElement;
+        return new VideoElementJsonNode(nodeType, tagName, className, videoElement.src, children);
       case 'SCRIPT':
         throw new Error('cannot include script tag');
       default:
@@ -47,9 +49,11 @@ export class ElementJsonNode extends JsonNode {
     } = object;
     switch (tagName) {
       case 'IMG':
+        const mediaElementJsonNode = object as MediaElementJsonNode;
+        return new MediaElementJsonNode(nodeType, tagName, className, mediaElementJsonNode.src, children);
       case 'VIDEO':
-        const mediaElement = object as MediaElementJsonNode;
-        return new MediaElementJsonNode(nodeType, tagName, className, mediaElement.src, children);
+        const videoElementJsonNode = object as VideoElementJsonNode;
+        return new VideoElementJsonNode(nodeType, tagName, className, videoElementJsonNode.src, children);
       case 'SCRIPT':
         throw new Error('cannot include script tag');
       default:
@@ -90,6 +94,12 @@ export class MediaElementJsonNode extends ElementJsonNode {
 
   public get attributeString(): string {
     return `${super.attributeString} src="${this.src}"`;
+  }
+}
+
+export class VideoElementJsonNode extends MediaElementJsonNode {
+  public get attributeString(): string {
+    return `${super.attributeString} autoplay loop muted src="${this.src}"`;
   }
 }
 
