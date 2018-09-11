@@ -10,3 +10,5 @@ function openSync() {
     + scope;
   window.open(url);
 }
+
+document.getElementById('sync-button').addEventListener('click', openSync);
