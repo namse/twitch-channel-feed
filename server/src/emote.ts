@@ -10,7 +10,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
     const body = JSON.parse(event.body);
     const {
       userId,
-      emotesMap,
+      emotes,
     } = body;
     const token = extractToken(event.headers);
     const decoded = await authenticateIdToken(token);
@@ -20,12 +20,15 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
     if (sub !== userId) {
       throw new Error('you have wrong token.');
     }
+    if (!emotes) {
+      throw new Error('no emotes');
+    }
 
-    console.log(JSON.stringify(emotesMap, null, 2));
+    console.log(JSON.stringify(emotes, null, 2));
     await s3.putObject({
       Bucket: TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET,
       Key: userId,
-      Body: JSON.stringify(emotesMap),
+      Body: JSON.stringify(emotes),
     }).promise();
 
     const response = {
