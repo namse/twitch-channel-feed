@@ -21,6 +21,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
       throw new Error('you have wrong token.');
     }
 
+    console.log(JSON.stringify(emotesMap, null, 2));
     await s3.putObject({
       Bucket: TWITCH_EMOTES_AVAILABLE_TO_USER_BUCKET,
       Key: userId,
