@@ -11,7 +11,6 @@
     <div ref="editor" class="editor" contenteditable="true"></div>
     <div class="bottom">
       <EmoteInputComponent :clickEmote="onClickEmote"/>
-      <button v-on:click="openEmoteSyncPage">사용가능한 새 이모티콘 가져오기</button>
     </div>
   </div>
 </template>
@@ -71,14 +70,6 @@ export default class Edit extends Vue {
     } catch(err) {
       alert(`다음과 같은 이유로 글을 저장하지 못하였습니다. - ${err}`);
     }
-  }
-  openEmoteSyncPage() {
-    const redirectUri =
-      "http://twitch-channel-feed-emote-sync-page.s3-website.ap-northeast-2.amazonaws.com";
-    const responseType = "token+id_token";
-    const scope = ["openid", "user_subscriptions", "user_read"].join(" ");
-    const url = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_APP_CLIENT_ID}&redirect_uri=${redirectUri}&&response_type=${responseType}&scope=${scope}`;
-    window.open(url);
   }
   onClickEmote(emote: Emote) {
     const imageTag = document.createElement("img");

@@ -1,5 +1,13 @@
 <template>
   <div class="container">
+    <div v-if="Object.keys(emotesMap).length === 0">
+      아직 동기화된 이모티콘이 없습니다.<br/>
+      <br/>
+      <strong>--이모티콘 동기화 하는 방법--</strong><br/>
+      왼쪽 아래 'ChannelFeed' -> '구성' -><br/> '사용가능한 이모티콘 동기화하기' 버튼 클릭<br/>
+      <br/>
+      위 방법을 따라하시면 평소 사용하시던 이모티콘을<br/>
+      채널피드에도 사용할 수 있습니다. 감사합니다!</div>
     <div class="emote-picker-block" v-for="emotes in emotesMap" :key="emotes[0].emoteSetId">
       <div class="emote-picker-container tooltip-wrapper" v-for="emote in emotes" :key="emote.id">
         <button class="emote-picker-button" v-on:click="clickEmote(emote)">
