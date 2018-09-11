@@ -1,4 +1,4 @@
-export const TWITCH_APP_CLIENT_ID = 'nmbqgdv3qbinn9z3088sw816t834jx';
+export const TWITCH_APP_CLIENT_ID = '04x1w8j9ieyvxl4c3j17173z0zh1e7';
 
 declare type UserEmotesResponse = {
   [EmoteSetId: string]: {
