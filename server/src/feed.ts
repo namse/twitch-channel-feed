@@ -87,7 +87,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
     });
 
     const { newRecent, coldData } = divideColdData(recent, userId);
-    await s3.putObject({
+    const { ETag: eTag } = await s3.putObject({
       Bucket: bucketName,
       Key: recentKey,
       Body: JSON.stringify(newRecent),
@@ -100,7 +100,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
         Body: JSON.stringify(coldData),
       }).promise();
     }
-
+    console.log(eTag);
     const response = {
       statusCode: 200,
       headers: {
@@ -110,6 +110,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
       body: JSON.stringify({
         message: 'Successfully posted',
         recent,
+        eTag,
       }),
     };
 
