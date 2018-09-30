@@ -30,6 +30,7 @@ interface State {
   emotesMap: EmotesMap;
   currentFeedFile?: FeedFile;
   userId?: string;
+  eTag?: string;
 };
 
 const state: State = {
@@ -44,6 +45,7 @@ const state: State = {
   emotesMap: {},
   currentFeedFile: undefined,
   userId: undefined,
+  eTag: undefined,
 };
 
 export default new Vuex.Store({
@@ -85,17 +87,25 @@ export default new Vuex.Store({
       state.feeds.push(...feedFile.feeds);
       state.currentFeedFile = feedFile;
       console.log(feedFile.nextData);
-    }
+    },
+    clearETag(state) {
+      state.eTag = undefined;
+    },
+    setETag(state, eTag: string) {
+      state.eTag = eTag;
+    },
   },
   actions: {
     async loadRecentFeeds(context) {
       const {
         userId,
+        eTag,
       } = context.state;
       if (!userId) {
         throw new Error('no userId');
       }
-      const feedFile = await getRecentFeedFile(userId);
+      const feedFile = await getRecentFeedFile(userId, eTag);
+      context.commit('clearETag');
       context.commit('clearFeed');
       context.commit('addFeedFile', feedFile);
     },

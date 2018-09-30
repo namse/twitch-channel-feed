@@ -21,7 +21,7 @@
 //     2. 이모티콘 넣을 수 있어야 하고
 //     3. 사진 넣을 수 있어야 하고요 - Optional
 import { Component, Vue } from "vue-property-decorator";
-import { State, Action } from "vuex-class";
+import { State, Action, Mutation } from "vuex-class";
 import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
 import { savePost } from "../api/backendApi";
@@ -41,6 +41,8 @@ export default class Edit extends Vue {
 
   @Action("changePage") changePage: any;
   @Action("fetchEmotesAvailable") fetchEmotesAvailable: any;
+  @Mutation('setETag') setETag: any;
+
 
   readonly PAGE_WIDTH = 500;
   readonly IMAGE_MARGIN = 10;
@@ -65,7 +67,8 @@ export default class Edit extends Vue {
     const content = JSON.stringify(jsonNode);
 
     try {
-      await savePost(this.extensionAuth.token, content);
+      const eTag = await savePost(this.extensionAuth.token, content);
+      this.setETag(eTag);
       this.changePage("ViewPage");
     } catch(err) {
       alert(`다음과 같은 이유로 글을 저장하지 못하였습니다. - ${err}`);
