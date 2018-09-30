@@ -21,7 +21,7 @@ export async function getEmotesinfo(emoteSetId: string): Promise<Emote[]> {
   return await response.json();
 }
 
-export async function savePost(token: string, content: string) {
+export async function savePost(token: string, content: string): Promise<string> {
   const response = await fetch(
     `${BACKEND_ENDPOINT}/feed`,
     {
@@ -35,6 +35,10 @@ export async function savePost(token: string, content: string) {
     },
   );
   await check2xx(response);
+  const {
+    eTag,
+  } = await response.json();
+  return eTag;
 }
 
 
