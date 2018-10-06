@@ -20,6 +20,7 @@
     "eslint": "^5.4.0",
     "serverless": "^1.29.2",
     "serverless-domain-manager": "^2.6.0",
+    "serverless-offline": "^3.27.0",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
   },
@@ -28,7 +29,8 @@
     "deploy-function": "serverless deploy function -f",
     "log": "serverless logs -t -f",
     "start": "tsc -w --noEmit",
-    "build": "tsc"
+    "build": "tsc",
+    "local": "sls offline start"
   },
   "author": "",
   "license": "ISC"

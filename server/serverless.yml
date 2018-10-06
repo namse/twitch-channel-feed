@@ -63,6 +63,7 @@ functions:
 
 plugins:
   - serverless-domain-manager
+  - serverless-offline
 
 custom:
   cors:
