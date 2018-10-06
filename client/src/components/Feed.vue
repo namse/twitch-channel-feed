@@ -4,11 +4,20 @@
       <span class="date">{{fromDateString}}</span>
     </header>
     <div class="content" v-html="htmlContent"></div>
+    <div class="bottom-menu">
+      <button class="edit" @click="startEditingFeed(feed)">
+        <font-awesome-icon icon="edit" /> 수정하기
+      </button>
+      <button class="edit" @click="startEditingFeed(feed)">
+        <font-awesome-icon icon="trash-alt" /> 삭제하기
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+import { Action } from "vuex-class";
 import toJsonNodeFromString from "../JsonNode/toJsonNodeFromString";
 import { Feed } from '../../../types/FeedFile';
 const moment = require('moment');
@@ -16,15 +25,15 @@ const moment = require('moment');
 @Component
 export default class FeedComponent extends Vue {
   @Prop() private feed!: Feed;
+  @Action("startEditingFeed") startEditingFeed: any;
+
   htmlContent: string = '';
+
   @Watch('feed.content', { immediate: true })
   onFeedContentChanged(val: string, oldVal: string) {
     try {
-      console.log(val);
       const jsonNode = toJsonNodeFromString(val);
-      console.log(jsonNode);
       this.htmlContent = jsonNode.toHtmlString();
-      console.log(this.htmlContent);
     } catch (err) {
       console.error(err);
       this.htmlContent = 'ERROR - 이 글을 로딩할 수 없습니다.';
@@ -52,5 +61,8 @@ export default class FeedComponent extends Vue {
 }
 .content {
   overflow-wrap: break-word;
+}
+.bottom-menu {
+  text-align: center;
 }
 </style>

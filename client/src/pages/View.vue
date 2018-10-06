@@ -2,7 +2,7 @@
   <div ref="view" class="view">
     <button
       v-if="isOwner"
-      v-on:click="changePage('EditPage')"
+      v-on:click="startEditingFeed()"
     >Post New Channel Feed</button>
     <div v-for="(feed, index) in feeds" :key="index">
       <FeedComponent :feed="feed"/>
@@ -23,7 +23,7 @@ import { Feed, FeedFile } from '../../../types/FeedFile';
   }
 })
 export default class ViewPage extends Vue {
-  @Action("changePage") changePage: any;
+  @Action("startEditingFeed") startEditingFeed: any;
   @Action("loadNextFeeds") loadNextFeeds: any;
 
   @State("feeds") feeds!: Feed[];

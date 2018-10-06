@@ -31,6 +31,17 @@ functions:
           path: feed
           method: post
           cors: ${self:custom.cors}
+  editFeed:
+    handler: src/feed.put
+    events:
+      - http:
+          path: feed/{feedId}
+          method: put
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                feedId: true
   emote:
     handler: src/emote.post
     events:

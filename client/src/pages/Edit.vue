@@ -20,14 +20,16 @@
 //     1. 글 쓸 수 있어야 함.
 //     2. 이모티콘 넣을 수 있어야 하고
 //     3. 사진 넣을 수 있어야 하고요 - Optional
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { State, Action, Mutation } from "vuex-class";
 import EmoteInputComponent from "@/components/EmoteInput.vue";
 import { TWITCH_APP_CLIENT_ID } from "../api/twitchApi";
-import { savePost } from "../api/backendApi";
+import { savePost, editPost } from "../api/backendApi";
 import uploadMedia from '../utils/uploadMedia';
 import toJsonNodeFromHTMLElement from "../JsonNode/toJsonNodeFromHTMLElement";
 import { ExtensionAuth } from '../store/twitch';
+import { Feed } from '../../../types/FeedFile';
+import toJsonNodeFromString from "../JsonNode/toJsonNodeFromString";
 
 declare var Twitch: any;
 
@@ -38,11 +40,11 @@ declare var Twitch: any;
 })
 export default class Edit extends Vue {
   @State("extensionAuth") extensionAuth!: ExtensionAuth;
+  @State("editingFeed") editingFeed?: Feed;
 
   @Action("changePage") changePage: any;
   @Action("fetchEmotesAvailable") fetchEmotesAvailable: any;
   @Mutation('setETag') setETag: any;
-
 
   readonly PAGE_WIDTH = 500;
   readonly IMAGE_MARGIN = 10;
@@ -54,7 +56,21 @@ export default class Edit extends Vue {
 
   elementReplaceMap: { source: HTMLElement, dest: HTMLElement }[] = [];
   compressingJobs: Promise<any>[] = [];
-
+  mounted() {
+    this.loadEditorContent();
+  }
+  loadEditorContent() {
+    try {
+      if (!this.editingFeed) {
+        return;
+      }
+      const jsonNode = toJsonNodeFromString(this.editingFeed.content);
+      this.$refs.editor.innerHTML = jsonNode.toHtmlString();
+    } catch (err) {
+      console.error(err);
+      this.$refs.editor.innerText = 'ERROR - 이 글을 로딩할 수 없습니다.';
+    }
+  }
   back() {
     this.changePage("ViewPage");
   }
@@ -67,7 +83,9 @@ export default class Edit extends Vue {
     const content = JSON.stringify(jsonNode);
 
     try {
-      const eTag = await savePost(this.extensionAuth.token, content);
+      const eTag = this.editingFeed
+        ? await editPost(this.extensionAuth.token, content, this.editingFeed.id)
+        : await savePost(this.extensionAuth.token, content);
       this.setETag(eTag);
       this.changePage("ViewPage");
     } catch(err) {

@@ -43,6 +43,26 @@ export async function savePost(token: string, content: string): Promise<string> 
   return eTag;
 }
 
+export async function editPost(token: string, content: string, feedId: string): Promise<string> {
+  const response = await fetch(
+    `${BACKEND_ENDPOINT}/feed/${feedId}`,
+    {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        content,
+      }),
+    },
+  );
+  await check2xx(response);
+  const {
+    eTag,
+  } = await response.json();
+  return eTag;
+}
+
 
 export async function saveEmotes(token: string, userId: string, emotes: EmotesMap) {
   const response = await fetch(

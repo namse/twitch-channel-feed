@@ -17,6 +17,7 @@ export async function getFeedFile(key: string, eTag: string = ''): Promise<FeedF
     case 403: {
       return {
         feeds: [],
+        key,
       };
     }
     case 412: {

@@ -31,6 +31,7 @@ interface State {
   currentFeedFile?: FeedFile;
   userId?: string;
   eTag?: string;
+  editingFeed?: Feed;
 };
 
 const state: State = {
@@ -46,6 +47,7 @@ const state: State = {
   currentFeedFile: undefined,
   userId: undefined,
   eTag: undefined,
+  editingFeed: undefined,
 };
 
 export default new Vuex.Store({
@@ -186,6 +188,10 @@ export default new Vuex.Store({
     async fetchEmotesAvailable(context, userId) {
       const emotesAvailable = await getEmotesAvailable(userId);
       context.commit('setEmotesAvailable', emotesAvailable);
+    },
+    async startEditingFeed(context, feed) {
+      context.state.editingFeed = feed;
+      context.commit('setCurrentPage', 'EditPage');
     },
   },
 });
