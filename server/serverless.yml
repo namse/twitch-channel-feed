@@ -42,6 +42,17 @@ functions:
             parameters:
               paths:
                 feedId: true
+  deleteFeed:
+    handler: src/feed.remove
+    events:
+      - http:
+          path: feed/{feedId}
+          method: delete
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                feedId: true
   emote:
     handler: src/emote.post
     events:

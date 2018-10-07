@@ -1,11 +1,11 @@
 export const TWITCH_APP_CLIENT_ID = '04x1w8j9ieyvxl4c3j17173z0zh1e7';
 
-declare type UserEmotesResponse = {
-  [EmoteSetId: string]: {
+declare interface UserEmotesResponse {
+  [EmoteSetId: string]: Array<{
     code: string,
     id: number,
-  }[],
-};
+  }>;
+}
 
 export async function getUserEmotes(accessToken: string, userId: string): Promise<UserEmotesResponse> {
   const response = await fetch(`https://api.twitch.tv/kraken/users/${userId}/emotes`, {
@@ -13,7 +13,7 @@ export async function getUserEmotes(accessToken: string, userId: string): Promis
       'Authorization': `OAuth ${accessToken}`,
       'Accept': 'application/vnd.twitchtv.v5+json',
       'Client-ID': TWITCH_APP_CLIENT_ID,
-    }
+    },
   });
   const json = await response.json();
   return json.emoticon_sets;

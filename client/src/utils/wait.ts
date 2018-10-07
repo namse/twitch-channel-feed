@@ -3,5 +3,5 @@ export default function wait(time) {
     setTimeout(() => {
       resolve();
     }, time);
-  })
+  });
 }

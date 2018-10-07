@@ -19,17 +19,7 @@
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import { State, Action } from "vuex-class";
-
-@Component
-export default class EmoteInputComponent extends Vue {
-  @State("emotesMap") emotesMap!: EmotesMap;
-  @Prop({ type: Function, default: undefined })
-  clickEmote!: (emote: Emote) => void;
-}
-</script>
+<script lang="ts" src="./EmoteInput.ts"></script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">

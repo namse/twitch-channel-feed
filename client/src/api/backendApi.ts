@@ -63,6 +63,18 @@ export async function editPost(token: string, content: string, feedId: string): 
   return eTag;
 }
 
+export async function deletePost(token: string, feedId: string): Promise<void> {
+  const response = await fetch(
+    `${BACKEND_ENDPOINT}/feed/${feedId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  await check2xx(response);
+}
 
 export async function saveEmotes(token: string, userId: string, emotes: EmotesMap) {
   const response = await fetch(
@@ -86,12 +98,12 @@ export async function getEmotesAvailable(userId: string): Promise<EmotesMap> {
   return await response.json();
 }
 
-export type PreSignedUrlResponse = {
+export interface PreSignedUrlResponse {
   url: string;
   fields: { [key: string]: string };
   mediaId: string;
   key: string;
-};
+}
 
 export async function getPreSignedUrl(token: string): Promise<PreSignedUrlResponse> {
   const response = await fetch(`${BACKEND_ENDPOINT}/media/preSignedUrl`, {
@@ -103,10 +115,10 @@ export async function getPreSignedUrl(token: string): Promise<PreSignedUrlRespon
   return response.json();
 }
 
-export type EncodeMediaResponse = {
-  url: string,
-  mime: string,
-};
+export interface EncodeMediaResponse {
+  url: string;
+  mime: string;
+}
 
 export async function encodeMedia(token: string, mediaId: string): Promise<EncodeMediaResponse> {
   const response = await fetch(`${BACKEND_ENDPOINT}/media/${mediaId}/encode`, {

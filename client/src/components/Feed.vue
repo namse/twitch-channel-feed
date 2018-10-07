@@ -1,5 +1,12 @@
 <template>
   <div class="container">
+    <ModalComponent
+      title="피드 삭제"
+      message="정말 피드를 삭제하시겠습니까?"
+      :isOpen="isOpenDeleteModal"
+      @confirm="onConfirmDelete(feed)"
+      @cancel="closeDeleteModal()"
+    />
     <header>
       <span class="date">{{fromDateString}}</span>
     </header>
@@ -8,40 +15,14 @@
       <button class="edit" @click="startEditingFeed(feed)">
         <font-awesome-icon icon="edit" /> 수정하기
       </button>
-      <button class="edit" @click="startEditingFeed(feed)">
+      <button class="edit" @click="openDeleteFeedModal()">
         <font-awesome-icon icon="trash-alt" /> 삭제하기
       </button>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Prop, Vue, Watch } from "vue-property-decorator";
-import { Action } from "vuex-class";
-import toJsonNodeFromString from "../JsonNode/toJsonNodeFromString";
-import { Feed } from '../../../types/FeedFile';
-const moment = require('moment');
-
-@Component
-export default class FeedComponent extends Vue {
-  @Prop() private feed!: Feed;
-  @Action("startEditingFeed") startEditingFeed: any;
-
-  htmlContent: string = '';
-
-  @Watch('feed.content', { immediate: true })
-  onFeedContentChanged(val: string, oldVal: string) {
-    try {
-      const jsonNode = toJsonNodeFromString(val);
-      this.htmlContent = jsonNode.toHtmlString();
-    } catch (err) {
-      console.error(err);
-      this.htmlContent = 'ERROR - 이 글을 로딩할 수 없습니다.';
-    }
-  }
-
-  readonly fromDateString: string = moment(this.feed.date).fromNow();
-}
+<script lang="ts" src="./Feed.ts">
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

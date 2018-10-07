@@ -1,11 +1,11 @@
-export type FeedFile = {
+export interface FeedFile {
   feeds: Feed[];
   nextData?: string;
   key: string;
-};
+}
 
-export type Feed = {
+export interface Feed {
   id: string;
   date: Date;
   content: string;
-};
+}

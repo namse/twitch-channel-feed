@@ -227,3 +227,64 @@ export async function put(event: any, _: any, callback: (error: Error, result: a
     callback(null, response);
   }
 };
+
+export async function remove(event: any, _: any, callback: (error: Error, result: any) => void) {
+  try {
+    const {
+      feedId,
+    } = event.pathParameters;
+
+    const token = extractToken(event.headers);
+    const decoded = await authenticateExtensionToken(token);
+    const {
+      role,
+      user_id: userId,
+    } = decoded;
+    if (role !== 'broadcaster') {
+      throw new Error('you are not broadcaster. fuck you');
+    }
+
+    const file = await findFileOfFeed(userId, feedId);
+
+    if (!file) {
+      return callback(null, { statusCode: 404, body: "Not found", headers: { "Content-Type": "text/plain" } });
+    }
+
+    console.log(file.feeds.map(feed => feed.id));
+    const feedIndex = file.feeds.findIndex(feed => feed.id === feedId);
+    console.log(feedIndex);
+    if (feedIndex === -1) {
+      throw new Error('cannot find feed in file');
+    }
+    file.feeds.splice(feedIndex, 1);
+
+    await s3.putObject({
+      Bucket: bucketName,
+      Key: file.key,
+      Body: JSON.stringify(file),
+    }).promise();
+
+    const response = {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        message: 'Successfully deleted',
+      }),
+    };
+
+    callback(null, response);
+  } catch (err) {
+    const response = {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify(err, Object.getOwnPropertyNames(err)),
+    };
+    callback(null, response);
+  }
+};

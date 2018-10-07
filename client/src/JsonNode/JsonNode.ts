@@ -13,15 +13,6 @@ const ClassNameFilter = [
 ];
 
 export class ElementJsonNode extends JsonNode {
-  constructor(
-    nodeType: number,
-    public tagName: string,
-    public className: string,
-    public children: JsonNode[],
-  ) {
-    super(nodeType);
-  }
-
   static createFromHtmlElement(element: HTMLElement, children: JsonNode[]): ElementJsonNode {
     const {
       nodeType,
@@ -59,6 +50,14 @@ export class ElementJsonNode extends JsonNode {
       default:
         return new ElementJsonNode(nodeType, tagName, className, children);
     }
+  }
+  constructor(
+    nodeType: number,
+    public tagName: string,
+    public className: string,
+    public children: JsonNode[],
+  ) {
+    super(nodeType);
   }
   public toHtmlString(): string {
     const tag = this.tagName.toLowerCase();

@@ -9,11 +9,10 @@ export default function toJsonNodeFromHTMLElement(node: Node): JsonNode {
 }
 
 function convertChildrenNodes(element: Node): JsonNode[] {
-  const childrenNodes = mapChildrenNodes(element, (child) => {
+  return mapChildrenNodes(element, (child) => {
     const childJsonNode = convertToJsonNode(child);
     return childJsonNode;
   }).filter(node => node) as JsonNode[];
-  return childrenNodes
 }
 
 function convertToJsonNode(node: Node): JsonNode | undefined {
@@ -41,6 +40,7 @@ function runRecursively(node: Node, func: (node: Node) => void) {
 
 function mapChildrenNodes<T>(node: Node, func: (node: Node) => T): T[] {
   const ret: T[] = [];
+  // tslint:disable-next-line
   for (let i = 0; i < node.childNodes.length; i += 1) {
     const child = node.childNodes[i];
     const result = func(child);
@@ -50,6 +50,7 @@ function mapChildrenNodes<T>(node: Node, func: (node: Node) => T): T[] {
 }
 
 function forEachChildrenNodes(element: Node, func: (node: Node) => void) {
+  // tslint:disable-next-line
   for (let i = 0; i < element.childNodes.length; i += 1) {
     const child = element.childNodes[i];
     func(child);

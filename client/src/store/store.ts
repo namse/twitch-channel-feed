@@ -8,16 +8,6 @@ import { Feed, FeedFile } from '../../../types/FeedFile';
 
 Vue.use(Vuex);
 
-function generateRandomContent(length) {
-  let text = "";
-  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789가나다라마바사아아아라나나다라마나아라 ";
-
-  for (let i = 0; i < length; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-  return text;
-}
-
 interface State {
   feeds: Feed[];
   accessToken?: string;
@@ -32,9 +22,9 @@ interface State {
   userId?: string;
   eTag?: string;
   editingFeed?: Feed;
-};
+}
 
-const state: State = {
+const initialState: State = {
   feeds: [],
   accessToken: undefined,
   idToken: undefined,
@@ -51,7 +41,7 @@ const state: State = {
 };
 
 export default new Vuex.Store({
-  state,
+  state: initialState,
   mutations: {
     clearFeed(state) {
       state.feeds = [];
@@ -64,10 +54,10 @@ export default new Vuex.Store({
       state.idToken = idToken;
     },
     setUser(state, user) {
-      state.user = user
+      state.user = user;
     },
     setUserEmote(state, user) {
-      state.user = user
+      state.user = user;
     },
     setEmoticonSets(state, emoticonSets) {
       state.emoticonSets = emoticonSets;
