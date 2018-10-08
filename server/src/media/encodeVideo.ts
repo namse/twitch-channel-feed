@@ -20,6 +20,7 @@ export default async function encodeVideo(buffer) {
 
   await writeFileAsync(inputFilePath, buffer);
 
+  // tslint:disable-next-line
   const command = `./ffmpeg -i ${inputFilePath} -c:v libx264 -vf "scale=w=min(iw\\,${MAX_WIDTH}):h=-2" -crf 24 ${outputFilePath}`;
   console.log(command);
   const { stdout, stderr } = await execAsync(command, {
@@ -31,5 +32,4 @@ export default async function encodeVideo(buffer) {
   const outputBuffer = await readFileAsync(outputFilePath);
 
   return outputBuffer;
-};
-
+}

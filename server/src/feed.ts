@@ -137,7 +137,7 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
     };
     callback(null, response);
   }
-};
+}
 
 
 async function findFileOfFeed(userId: string, feedId: string): Promise<FeedFile> {
@@ -186,14 +186,14 @@ export async function put(event: any, _: any, callback: (error: Error, result: a
     const file = await findFileOfFeed(userId, feedId);
 
     if (!file) {
-      return callback(null, { statusCode: 404, body: "Not found", headers: { "Content-Type": "text/plain" } });
+      return callback(null, { statusCode: 404, body: 'Not found', headers: { 'Content-Type': 'text/plain' } });
     }
 
-    const feed = file.feeds.find(feed => feed.id === feedId);
-    if (!feed) {
+    const foundFeed = file.feeds.find(feed => feed.id === feedId);
+    if (!foundFeed) {
       throw new Error('cannot find feed in file');
     }
-    feed.content = content;
+    foundFeed.content = content;
 
     const { ETag: eTag } = await s3.putObject({
       Bucket: bucketName,
@@ -226,7 +226,7 @@ export async function put(event: any, _: any, callback: (error: Error, result: a
     };
     callback(null, response);
   }
-};
+}
 
 export async function remove(event: any, _: any, callback: (error: Error, result: any) => void) {
   try {
@@ -247,7 +247,7 @@ export async function remove(event: any, _: any, callback: (error: Error, result
     const file = await findFileOfFeed(userId, feedId);
 
     if (!file) {
-      return callback(null, { statusCode: 404, body: "Not found", headers: { "Content-Type": "text/plain" } });
+      return callback(null, { statusCode: 404, body: 'Not found', headers: { 'Content-Type': 'text/plain' } });
     }
 
     console.log(file.feeds.map(feed => feed.id));
@@ -287,4 +287,4 @@ export async function remove(event: any, _: any, callback: (error: Error, result
     };
     callback(null, response);
   }
-};
+}

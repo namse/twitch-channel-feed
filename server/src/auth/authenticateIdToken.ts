@@ -16,14 +16,14 @@ function getKey(header, callback) {
   });
 }
 
-type JwtPayload = {
-  iss: string,
-  sub: string,
-  aud: string,
-  exp: number,
-  iat: number,
-  nonce: string,
-};
+interface JwtPayload {
+  iss: string;
+  sub: string;
+  aud: string;
+  exp: number;
+  iat: number;
+  nonce: string;
+}
 
 export default async function authenticateIdToken(token: string): Promise<JwtPayload> {
   return new Promise<JwtPayload>((resolve, reject) => {

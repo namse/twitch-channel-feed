@@ -33,7 +33,10 @@ module.exports.get = async (event: any, _: any, callback: (error: Error, result:
       ],
     };
 
-    const data = await new Promise<AWS.S3.PresignedPost>((resolve, reject) => {
+    const {
+      url,
+      fields,
+    } = await new Promise<AWS.S3.PresignedPost>((resolve, reject) => {
       s3.createPresignedPost(params, (err, data) => {
         if (err) {
           return reject(err);
@@ -41,11 +44,6 @@ module.exports.get = async (event: any, _: any, callback: (error: Error, result:
         resolve(data);
       });
     });
-
-    const {
-      url,
-      fields,
-    } = data;
 
     const response = {
       statusCode: 200,
