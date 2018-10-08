@@ -118,33 +118,6 @@ export default new Vuex.Store({
       const feedFile = await getFeedFile(currentFeedFile.nextData);
       context.commit('addFeedFile', feedFile);
     },
-    async fetchUser(context) {
-      const {
-        accessToken,
-      } = context.state;
-      if (!accessToken) {
-        throw new Error('No Access Token');
-      }
-      const user = await getUser(accessToken);
-      context.commit('setUser', user);
-    },
-    async fetchUserEmotes(context) {
-      const {
-        accessToken,
-        user,
-      } = context.state;
-      if (!user) {
-        throw new Error('No Twitch User logined');
-      }
-      if (!accessToken) {
-        throw new Error('No Access Token');
-      }
-      const emoticonSets = await getUserEmotes(accessToken, user._id);
-      context.commit('setEmoticonSets', emoticonSets);
-    },
-    setAccessToken(context, accessToken) {
-      context.commit('setAccessToken', accessToken);
-    },
     async saveExtensionAuth(context, auth: ExtensionAuth) {
       context.commit('setExtensionAuth', auth);
 
