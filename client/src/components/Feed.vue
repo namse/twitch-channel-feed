@@ -11,7 +11,7 @@
       <span class="date">{{fromDateString}}</span>
     </header>
     <div class="content" v-html="htmlContent"></div>
-    <div class="bottom-menu">
+    <div v-if="isOwner" class="bottom-menu">
       <button class="edit" @click="startEditingFeed(feed)">
         <font-awesome-icon icon="edit" /> 수정하기
       </button>

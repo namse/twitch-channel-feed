@@ -18,6 +18,7 @@ export default class FeedComponent extends Vue {
   @Action('startEditingFeed') startEditingFeed: any;
   @Action('loadRecentFeeds') loadRecentFeeds: any;
   @State('extensionAuth') extensionAuth!: ExtensionAuth;
+  @State('isOwner') isOwner!: boolean;
 
   htmlContent: string = '';
   isOpenDeleteModal: boolean = false;
