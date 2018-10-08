@@ -74,4 +74,4 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
     };
     callback(null, response);
   }
-};
+}

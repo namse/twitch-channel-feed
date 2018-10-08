@@ -14,7 +14,9 @@
         "quotemark": [
             true,
             "single"
-        ]
+        ],
+        "ordered-imports": false,
+        "object-literal-sort-keys": false
     },
     "rulesDirectory": []
 }
