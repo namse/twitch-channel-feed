@@ -8,7 +8,7 @@
       </button>
       <button class='save' v-on:click='save'>저장하기</button>
     </div>
-    <div ref='editor' class='editor' contenteditable='true'></div>
+    <div ref='editor' class='editor' contenteditable='true' @focusout="onFocusOut()"></div>
     <div class='bottom'>
       <EmoteInputComponent :clickEmote='onClickEmote'/>
     </div>

@@ -38,6 +38,9 @@ export default class Edit extends Vue {
 
   elementReplaceMap: Array<{ source: HTMLElement, dest: HTMLElement }> = [];
   compressingJobs: Array<Promise<any>> = [];
+
+  lastRange?: Range;
+
   mounted() {
     this.loadEditorContent();
   }
@@ -135,13 +138,22 @@ export default class Edit extends Vue {
     return imageElement;
   }
   addHtmlElement(element: HTMLElement) {
-    this.$refs.editor.focus();
     const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
+    const isFocusInNow = this.$refs.editor.contains(selection.anchorNode);
+
+    const range = !isFocusInNow && this.lastRange
+      ? this.lastRange
+      : selection.getRangeAt(0);
 
     range.insertNode(element);
     range.setStartAfter(element);
     range.setEndAfter(element);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+    selection.collapseToEnd();
+
+    this.lastRange = range;
 
     this.$refs.editor.focus();
   }
@@ -153,5 +165,8 @@ export default class Edit extends Vue {
       }
       parentNode.replaceChild(dest, source);
     });
+  }
+  onFocusOut() {
+    this.lastRange = window.getSelection().getRangeAt(0);
   }
 }
