@@ -12,7 +12,7 @@ function toJsonNodeFromObject(object: JsonNode): JsonNode {
       {
         const elementJsonNode = object as ElementJsonNode;
         const children = elementJsonNode.children.map(child => toJsonNodeFromObject(child));
-        return ElementJsonNode.createFromObject(elementJsonNode, children);
+        return ElementJsonNode.create(elementJsonNode, children);
       }
     case Node.TEXT_NODE:
       {

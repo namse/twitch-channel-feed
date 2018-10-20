@@ -20,7 +20,7 @@ function convertToJsonNode(node: Node): JsonNode | undefined {
     case Node.ELEMENT_NODE:
       {
         const nextNodes = convertChildrenNodes(node);
-        const elementNode = ElementJsonNode.createFromHtmlElement(node as HTMLElement, nextNodes);
+        const elementNode = ElementJsonNode.create(node as HTMLElement, nextNodes);
         return elementNode;
       }
     case Node.TEXT_NODE:

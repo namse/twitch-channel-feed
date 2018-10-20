@@ -13,7 +13,7 @@ const ClassNameFilter = [
 ];
 
 export class ElementJsonNode extends JsonNode {
-  static createFromHtmlElement(element: HTMLElement, children: JsonNode[]): ElementJsonNode {
+  static create(element: HTMLElement | ElementJsonNode, children: JsonNode[]): ElementJsonNode {
     const {
       nodeType,
       tagName,
@@ -28,26 +28,10 @@ export class ElementJsonNode extends JsonNode {
         return new VideoElementJsonNode(nodeType, tagName, className, videoElement.src, children);
       case 'SCRIPT':
         throw new Error('cannot include script tag');
+      case 'BR':
+        return new BreakJsonNode(nodeType, tagName, className, children);
       default:
-        return new ElementJsonNode(nodeType, tagName, className, children);
-    }
-  }
-  static createFromObject(object: ElementJsonNode, children: JsonNode[]): ElementJsonNode {
-    const {
-      nodeType,
-      tagName,
-      className,
-    } = object;
-    switch (tagName) {
-      case 'IMG':
-        const mediaElementJsonNode = object as MediaElementJsonNode;
-        return new MediaElementJsonNode(nodeType, tagName, className, mediaElementJsonNode.src, children);
-      case 'VIDEO':
-        const videoElementJsonNode = object as VideoElementJsonNode;
-        return new VideoElementJsonNode(nodeType, tagName, className, videoElementJsonNode.src, children);
-      case 'SCRIPT':
-        throw new Error('cannot include script tag');
-      default:
+        console.log(tagName);
         return new ElementJsonNode(nodeType, tagName, className, children);
     }
   }
@@ -99,6 +83,12 @@ export class MediaElementJsonNode extends ElementJsonNode {
 export class VideoElementJsonNode extends MediaElementJsonNode {
   public attributeString(): string {
     return `${super.attributeString()} autoplay loop muted src="${this.src}"`;
+  }
+}
+
+export class BreakJsonNode extends ElementJsonNode {
+  public toHtmlString(): string {
+    return '<br>';
   }
 }
 
