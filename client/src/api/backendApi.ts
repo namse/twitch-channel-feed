@@ -10,7 +10,7 @@ const BACKEND_ENDPOINT = apiGatewayStage
   : 'http://localhost:3000';
 
 export async function check2xx(response: Response) {
-  if (response.status >= 200 || response.status < 300) {
+  if (response.status >= 200 && response.status < 300) {
     return;
   } else {
     const json = await response.json();
